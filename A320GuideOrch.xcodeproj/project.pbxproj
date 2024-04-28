@@ -1,0 +1,607 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		96563C4B2BDEFDD000699F4C /* A320GuideOrchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96563C4A2BDEFDD000699F4C /* A320GuideOrchApp.swift */; };
+		96563C4D2BDEFDD000699F4C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96563C4C2BDEFDD000699F4C /* ContentView.swift */; };
+		96563C4F2BDEFDD100699F4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96563C4E2BDEFDD100699F4C /* Assets.xcassets */; };
+		96563C522BDEFDD100699F4C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96563C512BDEFDD100699F4C /* Preview Assets.xcassets */; };
+		96563C5C2BDEFDD100699F4C /* A320GuideOrchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96563C5B2BDEFDD100699F4C /* A320GuideOrchTests.swift */; };
+		96563C662BDEFDD100699F4C /* A320GuideOrchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96563C652BDEFDD100699F4C /* A320GuideOrchUITests.swift */; };
+		96563C682BDEFDD100699F4C /* A320GuideOrchUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96563C672BDEFDD100699F4C /* A320GuideOrchUITestsLaunchTests.swift */; };
+		96563C772BDEFDE100699F4C /* a320-cockpit.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 96563C742BDEFDE100699F4C /* a320-cockpit.usdz */; };
+		96563C782BDEFDE100699F4C /* a320-plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 96563C752BDEFDE100699F4C /* a320-plane.obj */; };
+		96563C792BDEFDE100699F4C /* a320-cockpit.scn in Resources */ = {isa = PBXBuildFile; fileRef = 96563C762BDEFDE100699F4C /* a320-cockpit.scn */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		96563C582BDEFDD100699F4C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96563C3F2BDEFDD000699F4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96563C462BDEFDD000699F4C;
+			remoteInfo = A320GuideOrch;
+		};
+		96563C622BDEFDD100699F4C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 96563C3F2BDEFDD000699F4C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96563C462BDEFDD000699F4C;
+			remoteInfo = A320GuideOrch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		96563C472BDEFDD000699F4C /* A320GuideOrch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = A320GuideOrch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		96563C4A2BDEFDD000699F4C /* A320GuideOrchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A320GuideOrchApp.swift; sourceTree = "<group>"; };
+		96563C4C2BDEFDD000699F4C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		96563C4E2BDEFDD100699F4C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		96563C512BDEFDD100699F4C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		96563C572BDEFDD100699F4C /* A320GuideOrchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = A320GuideOrchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		96563C5B2BDEFDD100699F4C /* A320GuideOrchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A320GuideOrchTests.swift; sourceTree = "<group>"; };
+		96563C612BDEFDD100699F4C /* A320GuideOrchUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = A320GuideOrchUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		96563C652BDEFDD100699F4C /* A320GuideOrchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A320GuideOrchUITests.swift; sourceTree = "<group>"; };
+		96563C672BDEFDD100699F4C /* A320GuideOrchUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = A320GuideOrchUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		96563C742BDEFDE100699F4C /* a320-cockpit.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "a320-cockpit.usdz"; sourceTree = "<group>"; };
+		96563C752BDEFDE100699F4C /* a320-plane.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "a320-plane.obj"; sourceTree = "<group>"; };
+		96563C762BDEFDE100699F4C /* a320-cockpit.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = "a320-cockpit.scn"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		96563C442BDEFDD000699F4C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96563C542BDEFDD100699F4C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96563C5E2BDEFDD100699F4C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		96563C3E2BDEFDD000699F4C = {
+			isa = PBXGroup;
+			children = (
+				96563C492BDEFDD000699F4C /* A320GuideOrch */,
+				96563C5A2BDEFDD100699F4C /* A320GuideOrchTests */,
+				96563C642BDEFDD100699F4C /* A320GuideOrchUITests */,
+				96563C482BDEFDD000699F4C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		96563C482BDEFDD000699F4C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96563C472BDEFDD000699F4C /* A320GuideOrch.app */,
+				96563C572BDEFDD100699F4C /* A320GuideOrchTests.xctest */,
+				96563C612BDEFDD100699F4C /* A320GuideOrchUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96563C492BDEFDD000699F4C /* A320GuideOrch */ = {
+			isa = PBXGroup;
+			children = (
+				96563C762BDEFDE100699F4C /* a320-cockpit.scn */,
+				96563C742BDEFDE100699F4C /* a320-cockpit.usdz */,
+				96563C752BDEFDE100699F4C /* a320-plane.obj */,
+				96563C4A2BDEFDD000699F4C /* A320GuideOrchApp.swift */,
+				96563C4C2BDEFDD000699F4C /* ContentView.swift */,
+				96563C4E2BDEFDD100699F4C /* Assets.xcassets */,
+				96563C502BDEFDD100699F4C /* Preview Content */,
+			);
+			path = A320GuideOrch;
+			sourceTree = "<group>";
+		};
+		96563C502BDEFDD100699F4C /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				96563C512BDEFDD100699F4C /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		96563C5A2BDEFDD100699F4C /* A320GuideOrchTests */ = {
+			isa = PBXGroup;
+			children = (
+				96563C5B2BDEFDD100699F4C /* A320GuideOrchTests.swift */,
+			);
+			path = A320GuideOrchTests;
+			sourceTree = "<group>";
+		};
+		96563C642BDEFDD100699F4C /* A320GuideOrchUITests */ = {
+			isa = PBXGroup;
+			children = (
+				96563C652BDEFDD100699F4C /* A320GuideOrchUITests.swift */,
+				96563C672BDEFDD100699F4C /* A320GuideOrchUITestsLaunchTests.swift */,
+			);
+			path = A320GuideOrchUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		96563C462BDEFDD000699F4C /* A320GuideOrch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 96563C6B2BDEFDD100699F4C /* Build configuration list for PBXNativeTarget "A320GuideOrch" */;
+			buildPhases = (
+				96563C432BDEFDD000699F4C /* Sources */,
+				96563C442BDEFDD000699F4C /* Frameworks */,
+				96563C452BDEFDD000699F4C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = A320GuideOrch;
+			productName = A320GuideOrch;
+			productReference = 96563C472BDEFDD000699F4C /* A320GuideOrch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		96563C562BDEFDD100699F4C /* A320GuideOrchTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 96563C6E2BDEFDD100699F4C /* Build configuration list for PBXNativeTarget "A320GuideOrchTests" */;
+			buildPhases = (
+				96563C532BDEFDD100699F4C /* Sources */,
+				96563C542BDEFDD100699F4C /* Frameworks */,
+				96563C552BDEFDD100699F4C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96563C592BDEFDD100699F4C /* PBXTargetDependency */,
+			);
+			name = A320GuideOrchTests;
+			productName = A320GuideOrchTests;
+			productReference = 96563C572BDEFDD100699F4C /* A320GuideOrchTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		96563C602BDEFDD100699F4C /* A320GuideOrchUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 96563C712BDEFDD100699F4C /* Build configuration list for PBXNativeTarget "A320GuideOrchUITests" */;
+			buildPhases = (
+				96563C5D2BDEFDD100699F4C /* Sources */,
+				96563C5E2BDEFDD100699F4C /* Frameworks */,
+				96563C5F2BDEFDD100699F4C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96563C632BDEFDD100699F4C /* PBXTargetDependency */,
+			);
+			name = A320GuideOrchUITests;
+			productName = A320GuideOrchUITests;
+			productReference = 96563C612BDEFDD100699F4C /* A320GuideOrchUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		96563C3F2BDEFDD000699F4C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					96563C462BDEFDD000699F4C = {
+						CreatedOnToolsVersion = 15.3;
+					};
+					96563C562BDEFDD100699F4C = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = 96563C462BDEFDD000699F4C;
+					};
+					96563C602BDEFDD100699F4C = {
+						CreatedOnToolsVersion = 15.3;
+						TestTargetID = 96563C462BDEFDD000699F4C;
+					};
+				};
+			};
+			buildConfigurationList = 96563C422BDEFDD000699F4C /* Build configuration list for PBXProject "A320GuideOrch" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 96563C3E2BDEFDD000699F4C;
+			productRefGroup = 96563C482BDEFDD000699F4C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				96563C462BDEFDD000699F4C /* A320GuideOrch */,
+				96563C562BDEFDD100699F4C /* A320GuideOrchTests */,
+				96563C602BDEFDD100699F4C /* A320GuideOrchUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		96563C452BDEFDD000699F4C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96563C522BDEFDD100699F4C /* Preview Assets.xcassets in Resources */,
+				96563C4F2BDEFDD100699F4C /* Assets.xcassets in Resources */,
+				96563C782BDEFDE100699F4C /* a320-plane.obj in Resources */,
+				96563C772BDEFDE100699F4C /* a320-cockpit.usdz in Resources */,
+				96563C792BDEFDE100699F4C /* a320-cockpit.scn in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96563C552BDEFDD100699F4C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96563C5F2BDEFDD100699F4C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		96563C432BDEFDD000699F4C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96563C4D2BDEFDD000699F4C /* ContentView.swift in Sources */,
+				96563C4B2BDEFDD000699F4C /* A320GuideOrchApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96563C532BDEFDD100699F4C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96563C5C2BDEFDD100699F4C /* A320GuideOrchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96563C5D2BDEFDD100699F4C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96563C662BDEFDD100699F4C /* A320GuideOrchUITests.swift in Sources */,
+				96563C682BDEFDD100699F4C /* A320GuideOrchUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		96563C592BDEFDD100699F4C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96563C462BDEFDD000699F4C /* A320GuideOrch */;
+			targetProxy = 96563C582BDEFDD100699F4C /* PBXContainerItemProxy */;
+		};
+		96563C632BDEFDD100699F4C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96563C462BDEFDD000699F4C /* A320GuideOrch */;
+			targetProxy = 96563C622BDEFDD100699F4C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		96563C692BDEFDD100699F4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		96563C6A2BDEFDD100699F4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		96563C6C2BDEFDD100699F4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"A320GuideOrch/Preview Content\"";
+				DEVELOPMENT_TEAM = Z64KRUX3W3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = A320_CHECKLIST;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		96563C6D2BDEFDD100699F4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"A320GuideOrch/Preview Content\"";
+				DEVELOPMENT_TEAM = Z64KRUX3W3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = A320_CHECKLIST;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		96563C6F2BDEFDD100699F4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z64KRUX3W3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrchTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/A320GuideOrch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/A320GuideOrch";
+			};
+			name = Debug;
+		};
+		96563C702BDEFDD100699F4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z64KRUX3W3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrchTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/A320GuideOrch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/A320GuideOrch";
+			};
+			name = Release;
+		};
+		96563C722BDEFDD100699F4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z64KRUX3W3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = A320GuideOrch;
+			};
+			name = Debug;
+		};
+		96563C732BDEFDD100699F4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z64KRUX3W3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrchUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = A320GuideOrch;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		96563C422BDEFDD000699F4C /* Build configuration list for PBXProject "A320GuideOrch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96563C692BDEFDD100699F4C /* Debug */,
+				96563C6A2BDEFDD100699F4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		96563C6B2BDEFDD100699F4C /* Build configuration list for PBXNativeTarget "A320GuideOrch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96563C6C2BDEFDD100699F4C /* Debug */,
+				96563C6D2BDEFDD100699F4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		96563C6E2BDEFDD100699F4C /* Build configuration list for PBXNativeTarget "A320GuideOrchTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96563C6F2BDEFDD100699F4C /* Debug */,
+				96563C702BDEFDD100699F4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		96563C712BDEFDD100699F4C /* Build configuration list for PBXNativeTarget "A320GuideOrchUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96563C722BDEFDD100699F4C /* Debug */,
+				96563C732BDEFDD100699F4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 96563C3F2BDEFDD000699F4C /* Project object */;
+}
