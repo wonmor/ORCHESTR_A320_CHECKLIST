@@ -9,6 +9,10 @@ struct ContentView: View {
         ZStack {
             SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV)
                 .ignoresSafeArea()
+            
+            CrosshairView()
+                .frame(width: 20, height: 20)
+            
             VStack {
                 Spacer()
                 
@@ -23,6 +27,22 @@ struct ContentView: View {
                     .foregroundStyle(.white)
             }
             .padding()
+        }
+    }
+}
+
+struct CrosshairView: View {
+    var body: some View {
+        GeometryReader { geometry in
+            Path { path in
+                let midX = geometry.size.width / 2
+                let midY = geometry.size.height / 2
+                path.move(to: CGPoint(x: midX, y: midY - 10))
+                path.addLine(to: CGPoint(x: midX, y: midY + 10))
+                path.move(to: CGPoint(x: midX - 10, y: midY))
+                path.addLine(to: CGPoint(x: midX + 10, y: midY))
+            }
+            .stroke(Color.white, lineWidth: 4)
         }
     }
 }
@@ -68,7 +88,7 @@ struct SceneContainer: UIViewRepresentable {
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
         setupDepthOfField(cameraNode.camera)
-        cameraNode.position = SCNVector3(238, 1171, 213) // Updated default camera position
+        cameraNode.position = SCNVector3(190, 1182, 393) // Updated default camera position
         cameraNode.look(at: center)
         scene.rootNode.addChildNode(cameraNode)
         cameraNode.camera?.fieldOfView = 95.0 // Set FOV to 90 degrees
