@@ -48,7 +48,7 @@ struct CrosshairView: View {
                 path.move(to: CGPoint(x: midX - 10, y: midY))
                 path.addLine(to: CGPoint(x: midX + 10, y: midY))
             }
-            .stroke(Color.white, lineWidth: 3)
+            .stroke(Color.white, lineWidth: 2.5)
         }
     }
 }
