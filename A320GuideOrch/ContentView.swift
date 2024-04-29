@@ -77,8 +77,9 @@ struct SceneContainer: UIViewRepresentable {
     private func setupDepthOfField(_ camera: SCNCamera?) {
         camera?.automaticallyAdjustsZRange = true
         camera?.focalLength = 50
-        camera?.fStop = 1.4
-        camera?.focusDistance = 10
+        camera?.wantsDepthOfField = true
+        camera?.focusDistance = 350
+        camera?.fStop = 0.0001
         camera?.fieldOfView = 60 // This line is redundant and can be removed since FOV is set above
     }
     
