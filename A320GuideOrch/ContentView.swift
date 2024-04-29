@@ -79,7 +79,7 @@ struct SceneContainer: UIViewRepresentable {
         camera?.focalLength = 50
         camera?.wantsDepthOfField = true
         camera?.focusDistance = 350
-        camera?.fStop = 0.0001
+        camera?.fStop = 1.2 * pow(10, -4) // f 1.2
         camera?.fieldOfView = 60 // This line is redundant and can be removed since FOV is set above
     }
     
