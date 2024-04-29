@@ -2,7 +2,7 @@ import SwiftUI
 import SceneKit
 
 struct ContentView: View {
-    @State private var cameraPosition = SCNVector3(234, 1026, -553) // Updated default position
+    @State private var cameraPosition = SCNVector3(250, 1150, -275) // Updated default position
     @State private var cameraFOV = CGFloat(90.0) // Updated default field of view to 90 degrees
 
     var body: some View {
@@ -22,6 +22,7 @@ struct ContentView: View {
                     .monospaced()
                     .foregroundStyle(.white)
             }
+            .padding()
         }
     }
 }
@@ -67,7 +68,7 @@ struct SceneContainer: UIViewRepresentable {
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
         setupDepthOfField(cameraNode.camera)
-        cameraNode.position = SCNVector3(234, 1026, -553) // Updated default camera position
+        cameraNode.position = SCNVector3(250, 1150, -275) // Updated default camera position
         cameraNode.look(at: center)
         scene.rootNode.addChildNode(cameraNode)
         cameraNode.camera?.fieldOfView = 90.0 // Set FOV to 90 degrees
