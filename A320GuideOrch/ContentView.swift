@@ -48,7 +48,7 @@ struct CrosshairView: View {
                 path.move(to: CGPoint(x: midX - 10, y: midY))
                 path.addLine(to: CGPoint(x: midX + 10, y: midY))
             }
-            .stroke(Color.white, lineWidth: 4)
+            .stroke(Color.white, lineWidth: 3)
         }
     }
 }
@@ -112,46 +112,49 @@ struct SceneContainer: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, SCNSceneRendererDelegate {
-           var parent: SceneContainer
+        var parent: SceneContainer
 
-           init(_ parent: SceneContainer) {
-               self.parent = parent
-           }
+        init(_ parent: SceneContainer) {
+            self.parent = parent
+        }
 
         func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-                guard let scnView = renderer as? SCNView, let cameraNode = renderer.pointOfView else { return }
-                
+            guard let scnView = renderer as? SCNView, let cameraNode = renderer.pointOfView else { return }
+
+            // Ensure UI interactions are on the main thread
+            DispatchQueue.main.async {
                 let centerPoint = CGPoint(x: scnView.bounds.midX, y: scnView.bounds.midY)
-                let hitResults = scnView.hitTest(centerPoint, options: nil)
-
-                if let closestHit = hitResults.first {
-                    let hitPosition = closestHit.worldCoordinates
-                    let cameraPosition = cameraNode.position
-                    let distance = sqrt(
-                        pow(hitPosition.x - cameraPosition.x, 2) +
-                        pow(hitPosition.y - cameraPosition.y, 2) +
-                        pow(hitPosition.z - cameraPosition.z, 2)
-                    )
-                    
-                    cameraNode.camera?.focusDistance = CGFloat(distance)
-
-                    DispatchQueue.main.async {
-                        self.parent.focusDistance = CGFloat(distance)
-                    }
-                }
-                
-                DispatchQueue.main.async {
-                    self.parent.cameraPosition = cameraNode.position
-                    if let fov = cameraNode.camera?.fieldOfView {
-                        self.parent.cameraFOV = fov
-                    }
-                }
+                self.performHitTest(scnView, centerPoint: centerPoint, cameraNode: cameraNode)
             }
-           
-           func setupObservers(for scnView: SCNView) {
-               scnView.delegate = self
-           }
-       }
+        }
+
+        private func performHitTest(_ scnView: SCNView, centerPoint: CGPoint, cameraNode: SCNNode) {
+            let hitResults = scnView.hitTest(centerPoint, options: nil)
+
+            if let closestHit = hitResults.first {
+                let hitPosition = closestHit.worldCoordinates
+                let cameraPosition = cameraNode.position
+                let distance = sqrt(
+                    pow(hitPosition.x - cameraPosition.x, 2) +
+                    pow(hitPosition.y - cameraPosition.y, 2) +
+                    pow(hitPosition.z - cameraPosition.z, 2)
+                )
+                
+                cameraNode.camera?.focusDistance = CGFloat(distance)
+
+                self.parent.focusDistance = CGFloat(distance)
+            }
+            
+            self.parent.cameraPosition = cameraNode.position
+            if let fov = cameraNode.camera?.fieldOfView {
+                self.parent.cameraFOV = fov
+            }
+        }
+
+        func setupObservers(for scnView: SCNView) {
+            scnView.delegate = self
+        }
+    }
 }
 
 extension SCNVector3 {
