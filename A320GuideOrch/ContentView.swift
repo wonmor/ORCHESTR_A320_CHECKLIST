@@ -139,15 +139,24 @@ struct SceneContainer: UIViewRepresentable {
                     pow(hitPosition.y - cameraPosition.y, 2) +
                     pow(hitPosition.z - cameraPosition.z, 2)
                 )
-                
-                cameraNode.camera?.focusDistance = CGFloat(distance)
 
-                self.parent.focusDistance = CGFloat(distance)
+                // Animate the change in focus distance
+                let duration: TimeInterval = 0.5 // Duration of the animation in seconds
+                SCNTransaction.begin()
+                SCNTransaction.animationDuration = duration
+                cameraNode.camera?.focusDistance = CGFloat(distance)
+                SCNTransaction.commit()
+
+                DispatchQueue.main.async {
+                    self.parent.focusDistance = CGFloat(distance)
+                }
             }
             
-            self.parent.cameraPosition = cameraNode.position
-            if let fov = cameraNode.camera?.fieldOfView {
-                self.parent.cameraFOV = fov
+            DispatchQueue.main.async {
+                self.parent.cameraPosition = cameraNode.position
+                if let fov = cameraNode.camera?.fieldOfView {
+                    self.parent.cameraFOV = fov
+                }
             }
         }
 
