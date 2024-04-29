@@ -4,10 +4,11 @@ import SceneKit
 struct ContentView: View {
     @State private var cameraPosition = SCNVector3(0, 0, 0) // Updated default position
     @State private var cameraFOV = CGFloat(0.0) // Updated default field of view to 90 degrees
+    @State private var focusDistance = CGFloat(350)
 
     var body: some View {
         ZStack {
-            SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV)
+            SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV, focusDistance: $focusDistance)
                 .ignoresSafeArea()
             
             CrosshairView()
@@ -22,6 +23,11 @@ struct ContentView: View {
                     .foregroundStyle(.white)
                 
                 Text("Camera FOV: \(cameraFOV, specifier: "%.2f") degrees")
+                    .bold()
+                    .monospaced()
+                    .foregroundStyle(.white)
+                
+                Text("Focus Distance: \(focusDistance, specifier: "%.2f")")
                     .bold()
                     .monospaced()
                     .foregroundStyle(.white)
@@ -50,13 +56,16 @@ struct CrosshairView: View {
 struct SceneContainer: UIViewRepresentable {
     @Binding var cameraPosition: SCNVector3
     @Binding var cameraFOV: CGFloat
+    @Binding var focusDistance: CGFloat
+    
+    @State private var cameraNode = SCNNode()
 
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
         scnView.scene = loadScene()
         scnView.allowsCameraControl = true
         scnView.autoenablesDefaultLighting = true
-        scnView.backgroundColor = UIColor.black
+        scnView.backgroundColor = UIColor.white
         
         context.coordinator.setupObservers(for: scnView)
         
@@ -84,8 +93,7 @@ struct SceneContainer: UIViewRepresentable {
             y: (boundingBox.max.y + boundingBox.min.y) / 2,
             z: (boundingBox.max.z + boundingBox.min.z) / 2
         )
-
-        let cameraNode = SCNNode()
+        
         cameraNode.camera = SCNCamera()
         setupDepthOfField(cameraNode.camera)
         cameraNode.position = SCNVector3(190, 1182, 393) // Updated default camera position
@@ -104,27 +112,46 @@ struct SceneContainer: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, SCNSceneRendererDelegate {
-        var parent: SceneContainer
+           var parent: SceneContainer
 
-        init(_ parent: SceneContainer) {
-            self.parent = parent
-        }
+           init(_ parent: SceneContainer) {
+               self.parent = parent
+           }
 
         func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
-            guard let cameraNode = renderer.pointOfView else { return }
-            DispatchQueue.main.async {
-                self.parent.cameraPosition = cameraNode.position
-                if let fov = cameraNode.camera?.fieldOfView {
-                    self.parent.cameraFOV = fov
+                guard let scnView = renderer as? SCNView, let cameraNode = renderer.pointOfView else { return }
+                
+                let centerPoint = CGPoint(x: scnView.bounds.midX, y: scnView.bounds.midY)
+                let hitResults = scnView.hitTest(centerPoint, options: nil)
+
+                if let closestHit = hitResults.first {
+                    let hitPosition = closestHit.worldCoordinates
+                    let cameraPosition = cameraNode.position
+                    let distance = sqrt(
+                        pow(hitPosition.x - cameraPosition.x, 2) +
+                        pow(hitPosition.y - cameraPosition.y, 2) +
+                        pow(hitPosition.z - cameraPosition.z, 2)
+                    )
+                    
+                    cameraNode.camera?.focusDistance = CGFloat(distance)
+
+                    DispatchQueue.main.async {
+                        self.parent.focusDistance = CGFloat(distance)
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    self.parent.cameraPosition = cameraNode.position
+                    if let fov = cameraNode.camera?.fieldOfView {
+                        self.parent.cameraFOV = fov
+                    }
                 }
             }
-        }
-        
-        func setupObservers(for scnView: SCNView) {
-            scnView.delegate = self
-        }
-    }
-
+           
+           func setupObservers(for scnView: SCNView) {
+               scnView.delegate = self
+           }
+       }
 }
 
 extension SCNVector3 {
