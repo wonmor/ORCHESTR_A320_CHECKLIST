@@ -2,24 +2,30 @@ import SwiftUI
 import SceneKit
 
 struct ContentView: View {
-    @State private var cameraPosition = SCNVector3(0, 0, 0)
-    @State private var cameraFOV = CGFloat(60.0) // Default field of view
+    @State private var cameraPosition = SCNVector3(234, 1026, -553) // Updated default position
+    @State private var cameraFOV = CGFloat(90.0) // Updated default field of view to 90 degrees
 
     var body: some View {
-        VStack {
+        ZStack {
             SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV)
                 .ignoresSafeArea()
             VStack {
+                Spacer()
+                
                 Text("Camera Position: \(cameraPosition.description)")
+                    .bold()
+                    .monospaced()
+                    .foregroundStyle(.white)
+                
                 Text("Camera FOV: \(cameraFOV, specifier: "%.2f") degrees")
+                    .bold()
+                    .monospaced()
+                    .foregroundStyle(.white)
             }
-            .padding()
-            .foregroundColor(.white)
-            .background(Color.black.opacity(0.8))
-            .cornerRadius(10)
         }
     }
 }
+
 struct SceneContainer: UIViewRepresentable {
     @Binding var cameraPosition: SCNVector3
     @Binding var cameraFOV: CGFloat
@@ -61,8 +67,10 @@ struct SceneContainer: UIViewRepresentable {
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
         setupDepthOfField(cameraNode.camera)
-        cameraNode.position = SCNVector3(center.x, center.y, center.z + 10)
+        cameraNode.position = SCNVector3(234, 1026, -553) // Updated default camera position
+        cameraNode.look(at: center)
         scene.rootNode.addChildNode(cameraNode)
+        cameraNode.camera?.fieldOfView = 90.0 // Set FOV to 90 degrees
     }
     
     private func setupDepthOfField(_ camera: SCNCamera?) {
@@ -70,7 +78,7 @@ struct SceneContainer: UIViewRepresentable {
         camera?.focalLength = 50
         camera?.fStop = 1.4
         camera?.focusDistance = 10
-        camera?.fieldOfView = 60
+        camera?.fieldOfView = 60 // This line is redundant and can be removed since FOV is set above
     }
     
     class Coordinator: NSObject, SCNSceneRendererDelegate {
