@@ -6,7 +6,7 @@ struct ArrowControls: View {
     var moveRight: () -> Void
     var moveForward: () -> Void
     var moveBackward: () -> Void
-
+    
     var body: some View {
         HStack(spacing: 20) {
             Button(action: moveLeft) {
@@ -81,11 +81,11 @@ struct ContentView: View {
             }
         }
     }
-
+    
     enum CameraDirection {
         case left, right, forward, backward
     }
-
+    
     func moveCamera(direction: CameraDirection) {
         var moveVector = SCNVector3()
         switch direction {
@@ -135,13 +135,13 @@ struct SceneContainer: UIViewRepresentable {
         lightNode.light?.shadowRadius = 10.0 // Adjust for softer edges
         lightNode.light?.zFar = 1000  // Set based on the size of your scene
         lightNode.light?.zNear = 1.0
-
+        
         // Position the light to point towards the scene
         lightNode.position = SCNVector3(x: 100, y: 100, z: 100)
         lightNode.look(at: SCNVector3Zero)  // Assuming you want it to point at the origin
         scene.rootNode.addChildNode(lightNode)
     }
-
+    
     private func configureMaterialProperties(for node: SCNNode) {
         node.enumerateChildNodes { (childNode, _) in
             if let geometry = childNode.geometry {
@@ -153,22 +153,22 @@ struct SceneContainer: UIViewRepresentable {
             }
         }
     }
-
+    
     
     func setupSceneView(scnView: SCNView) {
         scnView.scene = loadScene()
         scnView.allowsCameraControl = true
         scnView.autoenablesDefaultLighting = true
         scnView.backgroundColor = UIColor.black  // Or any suitable color
-
+        
         configureLight(scene: scnView.scene!)
         scnView.scene?.rootNode.childNodes.forEach { node in
             configureMaterialProperties(for: node)
         }
     }
-
-
-
+    
+    
+    
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
         scnView.scene = loadScene()
@@ -217,52 +217,52 @@ struct SceneContainer: UIViewRepresentable {
         cameraNode.physicsBody = SCNPhysicsBody(type: .kinematic, shape: SCNPhysicsShape(node: cameraNode, options: nil))
         cameraNode.physicsBody?.categoryBitMask = CollisionCategory.camera.rawValue
         cameraNode.physicsBody?.contactTestBitMask = CollisionCategory.geometry.rawValue
-
+        
     }
     
     enum CollisionCategory: Int {
         case camera = 1  // equivalent to 1 << 0
         case geometry = 2  // equivalent to 1 << 1
     }
-
+    
     private func applyShaderModifier(to scene: SCNScene) {
         let shaderModifier = """
            #pragma transparent
            #pragma body
-
+           
            // Base color adjustments
            vec3 coolTint = vec3(0.0, 0.1, 0.1); // Slightly blue tint
            float contrastFactor = 1.5; // Higher contrast
            float brightnessFactor = 0.9; // Slightly darker
            float saturationFactor = 1.1; // Slightly more saturated
-
+           
            // Extract current pixel color
            vec3 currentColor = _output.color.rgb;
-
+           
            // Apply contrast
            vec3 mean = vec3(0.5);
            currentColor = (currentColor - mean) * contrastFactor + mean;
-
+           
            // Apply brightness
            currentColor *= brightnessFactor;
-
+           
            // Apply saturation
            float avg = (currentColor.r + currentColor.g + currentColor.b) / 3.0;
            currentColor = mix(vec3(avg), currentColor, saturationFactor);
-
+           
            // Mix with cool tint
            currentColor += coolTint;
-
+           
            // Ensure the color is within the valid range
            currentColor = clamp(currentColor, 0.0, 1.0);
-
+           
            _output.color.rgb = currentColor;
            """
         scene.rootNode.enumerateChildNodes { node, _ in
             node.geometry?.shaderModifiers = [.fragment: shaderModifier]
         }
     }
-
+    
     
     private func setupDepthOfField(_ camera: SCNCamera?) {
         camera?.automaticallyAdjustsZRange = true
@@ -275,26 +275,26 @@ struct SceneContainer: UIViewRepresentable {
     
     class Coordinator: NSObject, SCNSceneRendererDelegate {
         var parent: SceneContainer
-
+        
         init(_ parent: SceneContainer) {
             self.parent = parent
         }
-
+        
         func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
             guard let scnView = renderer as? SCNView, let cameraNode = renderer.pointOfView else { return }
-
+            
             DispatchQueue.main.async {
                 let centerPoint = CGPoint(x: scnView.bounds.midX, y: scnView.bounds.midY)
-                                self.performHitTest(scnView, centerPoint: centerPoint, cameraNode: cameraNode)
+                self.performHitTest(scnView, centerPoint: centerPoint, cameraNode: cameraNode)
                 
                 let proposedPosition = self.calculateNewCameraPosition() // This needs to be a proper calculation
                 let moveAction = SCNAction.move(to: proposedPosition, duration: 0.1)
                 moveAction.timingMode = .easeInEaseOut
-
+                
                 cameraNode.runAction(moveAction) { [weak self] in
                     guard let self = self else { return }
                     // Collision handling is managed by SCNPhysicsContactDelegate, not here.
-
+                    
                     self.parent.cameraPosition = cameraNode.position
                     if let fov = cameraNode.camera?.fieldOfView {
                         self.parent.cameraFOV = fov
@@ -302,12 +302,54 @@ struct SceneContainer: UIViewRepresentable {
                 }
             }
         }
+        
+        private func createRectangleAtHitResult(hitResult: SCNHitTestResult, scene: SCNScene) {
+            // Main rectangle
+            let rectangle = SCNPlane(width: 1.0, height: 1.0)
+            let rectangleNode = SCNNode(geometry: rectangle)
+            let material = SCNMaterial()
+            material.diffuse.contents = UIColor.white.withAlphaComponent(0.5) // Semi-transparent white
+            rectangle.materials = [material]
 
+            // Border rectangle
+            let borderSize: CGFloat = 1.05 // 5% larger
+            let borderRectangle = SCNPlane(width: rectangle.width * borderSize, height: rectangle.height * borderSize)
+            let borderNode = SCNNode(geometry: borderRectangle)
+            let borderMaterial = SCNMaterial()
+            borderMaterial.diffuse.contents = UIColor.white
+            borderRectangle.materials = [borderMaterial]
 
+            // Position border behind the main rectangle
+            borderNode.position = SCNVector3(0, 0, -0.01) // Slightly behind the main rectangle
+
+            // Position the rectangle at the hit point
+            rectangleNode.position = SCNVector3(
+                x: hitResult.worldCoordinates.x,
+                y: hitResult.worldCoordinates.y,
+                z: hitResult.worldCoordinates.z
+            )
+
+            // Rotate to align with the surface normal
+            let normal = hitResult.worldNormal
+            rectangleNode.eulerAngles = SCNVector3(
+                x: -atan2(normal.z, normal.y) + Float.pi / 2,
+                y: 0,
+                z: atan2(normal.x, normal.y)
+            )
+
+            // Add border node as a child to the main rectangle node
+            rectangleNode.addChildNode(borderNode)
+
+            // Add the whole setup to the scene
+            scene.rootNode.addChildNode(rectangleNode)
+        }
+
+        
         private func performHitTest(_ scnView: SCNView, centerPoint: CGPoint, cameraNode: SCNNode) {
             let hitResults = scnView.hitTest(centerPoint, options: nil)
-
+            
             if let closestHit = hitResults.first {
+                createRectangleAtHitResult(hitResult: closestHit, scene: scnView.scene!)
                 let hitPosition = closestHit.worldCoordinates
                 let cameraPosition = cameraNode.position
                 let distance = sqrt(
@@ -315,14 +357,14 @@ struct SceneContainer: UIViewRepresentable {
                     pow(hitPosition.y - cameraPosition.y, 2) +
                     pow(hitPosition.z - cameraPosition.z, 2)
                 )
-
+                
                 // Animate the change in focus distance
                 let duration: TimeInterval = 0.5 // Duration of the animation in seconds
                 SCNTransaction.begin()
                 SCNTransaction.animationDuration = duration
                 cameraNode.camera?.focusDistance = CGFloat(distance)
                 SCNTransaction.commit()
-
+                
                 DispatchQueue.main.async {
                     self.parent.focusDistance = CGFloat(distance)
                 }
@@ -335,7 +377,7 @@ struct SceneContainer: UIViewRepresentable {
                 }
             }
         }
-
+        
         func setupObservers(for scnView: SCNView) {
             scnView.delegate = self
         }
@@ -357,7 +399,7 @@ extension SceneContainer.Coordinator: SCNPhysicsContactDelegate {
             // Handle the collision, e.g., stop movement, adjust camera properties, etc.
         }
     }
-
+    
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
         let nodes = [contact.nodeA, contact.nodeB]
         if nodes.contains(where: { $0 == parent.cameraNode }) {
@@ -368,7 +410,6 @@ extension SceneContainer.Coordinator: SCNPhysicsContactDelegate {
     }
 }
 
-
 extension SceneContainer.Coordinator {
     func calculateNewCameraPosition() -> SCNVector3 {
         // Example of moving forward while checking for obstacles
@@ -378,7 +419,7 @@ extension SceneContainer.Coordinator {
             y: parent.cameraNode.position.y + forwardMovement.y,
             z: parent.cameraNode.position.z + forwardMovement.z
         )
-
+        
         // Here you can check if the new position would result in a collision
         // If a collision is expected, you can adjust the position or cancel the movement
         return potentialNewPosition  // Adjust as needed based on collision checks
