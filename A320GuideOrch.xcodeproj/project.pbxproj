@@ -17,6 +17,7 @@
 		96563C772BDEFDE100699F4C /* a320-cockpit.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 96563C742BDEFDE100699F4C /* a320-cockpit.usdz */; };
 		96563C782BDEFDE100699F4C /* a320-plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 96563C752BDEFDE100699F4C /* a320-plane.obj */; };
 		96563C792BDEFDE100699F4C /* a320-cockpit.scn in Resources */ = {isa = PBXBuildFile; fileRef = 96563C762BDEFDE100699F4C /* a320-cockpit.scn */; };
+		96C291162BE07FAA000A68F4 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 96C291152BE07FAA000A68F4 /* SwiftSoup */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96C291162BE07FAA000A68F4 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +154,9 @@
 			dependencies = (
 			);
 			name = A320GuideOrch;
+			packageProductDependencies = (
+				96C291152BE07FAA000A68F4 /* SwiftSoup */,
+			);
 			productName = A320GuideOrch;
 			productReference = 96563C472BDEFDD000699F4C /* A320GuideOrch.app */;
 			productType = "com.apple.product-type.application";
@@ -224,6 +229,9 @@
 				Base,
 			);
 			mainGroup = 96563C3E2BDEFDD000699F4C;
+			packageReferences = (
+				96C291142BE07FAA000A68F4 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+			);
 			productRefGroup = 96563C482BDEFDD000699F4C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -602,6 +610,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		96C291142BE07FAA000A68F4 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		96C291152BE07FAA000A68F4 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 96C291142BE07FAA000A68F4 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 96563C3F2BDEFDD000699F4C /* Project object */;
 }

@@ -100,6 +100,39 @@ struct SceneContainer: UIViewRepresentable {
         cameraNode.look(at: center)
         scene.rootNode.addChildNode(cameraNode)
         cameraNode.camera?.fieldOfView = 95.0 // Set FOV to 90 degrees
+        
+        applyShaderModifier(to: scene)
+    }
+
+    private func applyShaderModifier(to scene: SCNScene) {
+        let shaderModifier = """
+              #pragma transparent
+              #pragma body
+
+              vec3 blueTint = vec3(0.0, 0.0, 1.0); // Strong blue
+              vec3 blackTint = vec3(0.0, 0.0, 0.0); // Black for darkening
+              float blueMixRatio = 0.03; // Mix ratio for blue tint
+              float blackMixRatio = 0.8; // Mix ratio for black tint
+              float saturationFactor = 2.5; // Increase for more saturation
+
+              // Extract current pixel color
+              vec3 currentColor = _output.color.rgb;
+
+              // Increase saturation
+              float avg = (currentColor.r + currentColor.g + currentColor.b) / 3.0;
+              currentColor = mix(vec3(avg), currentColor, saturationFactor);
+
+              // First, mix current color with blue tint
+              currentColor = mix(currentColor, blueTint, blueMixRatio);
+
+              // Then, mix the result with black tint to darken
+              currentColor = mix(currentColor, blackTint, blackMixRatio);
+
+              _output.color.rgb = currentColor;
+              """
+        scene.rootNode.enumerateChildNodes { node, _ in
+            node.geometry?.shaderModifiers = [.fragment: shaderModifier]
+        }
     }
     
     private func setupDepthOfField(_ camera: SCNCamera?) {
