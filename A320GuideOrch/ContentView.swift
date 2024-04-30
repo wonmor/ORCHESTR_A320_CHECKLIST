@@ -106,34 +106,42 @@ struct SceneContainer: UIViewRepresentable {
 
     private func applyShaderModifier(to scene: SCNScene) {
         let shaderModifier = """
-              #pragma transparent
-              #pragma body
+           #pragma transparent
+           #pragma body
 
-              vec3 blueTint = vec3(0.0, 0.0, 1.0); // Strong blue
-              vec3 blackTint = vec3(0.0, 0.0, 0.0); // Black for darkening
-              float blueMixRatio = 0.03; // Mix ratio for blue tint
-              float blackMixRatio = 0.8; // Mix ratio for black tint
-              float saturationFactor = 2.5; // Increase for more saturation
+           // Base color adjustments
+           vec3 coolTint = vec3(0.0, 0.1, 0.1); // Slightly blue tint
+           float contrastFactor = 1.5; // Higher contrast
+           float brightnessFactor = 0.9; // Slightly darker
+           float saturationFactor = 1.1; // Slightly more saturated
 
-              // Extract current pixel color
-              vec3 currentColor = _output.color.rgb;
+           // Extract current pixel color
+           vec3 currentColor = _output.color.rgb;
 
-              // Increase saturation
-              float avg = (currentColor.r + currentColor.g + currentColor.b) / 3.0;
-              currentColor = mix(vec3(avg), currentColor, saturationFactor);
+           // Apply contrast
+           vec3 mean = vec3(0.5);
+           currentColor = (currentColor - mean) * contrastFactor + mean;
 
-              // First, mix current color with blue tint
-              currentColor = mix(currentColor, blueTint, blueMixRatio);
+           // Apply brightness
+           currentColor *= brightnessFactor;
 
-              // Then, mix the result with black tint to darken
-              currentColor = mix(currentColor, blackTint, blackMixRatio);
+           // Apply saturation
+           float avg = (currentColor.r + currentColor.g + currentColor.b) / 3.0;
+           currentColor = mix(vec3(avg), currentColor, saturationFactor);
 
-              _output.color.rgb = currentColor;
-              """
+           // Mix with cool tint
+           currentColor += coolTint;
+
+           // Ensure the color is within the valid range
+           currentColor = clamp(currentColor, 0.0, 1.0);
+
+           _output.color.rgb = currentColor;
+           """
         scene.rootNode.enumerateChildNodes { node, _ in
             node.geometry?.shaderModifiers = [.fragment: shaderModifier]
         }
     }
+
     
     private func setupDepthOfField(_ camera: SCNCamera?) {
         camera?.automaticallyAdjustsZRange = true
