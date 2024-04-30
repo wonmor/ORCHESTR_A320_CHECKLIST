@@ -8,7 +8,11 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
+            Color.white
+                .ignoresSafeArea()
+            
             SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV, focusDistance: $focusDistance)
+                .opacity(0.85)
                 .ignoresSafeArea()
             
             CrosshairView()
@@ -59,6 +63,49 @@ struct SceneContainer: UIViewRepresentable {
     @Binding var focusDistance: CGFloat
     
     @State private var cameraNode = SCNNode()
+    
+    private func configureLight(scene: SCNScene) {
+        let lightNode = SCNNode()
+        lightNode.light = SCNLight()
+        lightNode.light?.type = .directional  // Or .spot
+        lightNode.light?.castsShadow = false
+        lightNode.light?.shadowColor = UIColor.black.withAlphaComponent(0.75) // Soften the shadow with transparency
+        lightNode.light?.shadowRadius = 10.0 // Adjust for softer edges
+        lightNode.light?.zFar = 1000  // Set based on the size of your scene
+        lightNode.light?.zNear = 1.0
+
+        // Position the light to point towards the scene
+        lightNode.position = SCNVector3(x: 100, y: 100, z: 100)
+        lightNode.look(at: SCNVector3Zero)  // Assuming you want it to point at the origin
+        scene.rootNode.addChildNode(lightNode)
+    }
+
+    private func configureMaterialProperties(for node: SCNNode) {
+        node.enumerateChildNodes { (childNode, _) in
+            if let geometry = childNode.geometry {
+                for material in geometry.materials {
+                    material.lightingModel = .physicallyBased // Better shadow and lighting
+                    material.writesToDepthBuffer = true
+                    material.readsFromDepthBuffer = true
+                }
+            }
+        }
+    }
+
+    
+    func setupSceneView(scnView: SCNView) {
+        scnView.scene = loadScene()
+        scnView.allowsCameraControl = true
+        scnView.autoenablesDefaultLighting = true
+        scnView.backgroundColor = UIColor.black  // Or any suitable color
+
+        configureLight(scene: scnView.scene!)
+        scnView.scene?.rootNode.childNodes.forEach { node in
+            configureMaterialProperties(for: node)
+        }
+    }
+
+
 
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
@@ -83,6 +130,7 @@ struct SceneContainer: UIViewRepresentable {
     private func loadScene() -> SCNScene {
         let scene = SCNScene(named: "a320-cockpit.scn")!
         configureCamera(scene)
+        configureLight(scene: scene)
         return scene
     }
     
