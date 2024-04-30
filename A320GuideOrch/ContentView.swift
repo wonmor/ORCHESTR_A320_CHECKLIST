@@ -1,11 +1,46 @@
 import SwiftUI
 import SceneKit
 
+struct ArrowControls: View {
+    var moveLeft: () -> Void
+    var moveRight: () -> Void
+    var moveForward: () -> Void
+    var moveBackward: () -> Void
+
+    var body: some View {
+        HStack(spacing: 20) {
+            Button(action: moveLeft) {
+                Image(systemName: "arrow.left.circle.fill")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+            }
+            VStack {
+                Button(action: moveForward) {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                }
+                Button(action: moveBackward) {
+                    Image(systemName: "arrow.down.circle.fill")
+                        .resizable()
+                        .frame(width: 50, height: 50)
+                }
+            }
+            Button(action: moveRight) {
+                Image(systemName: "arrow.right.circle.fill")
+                    .resizable()
+                    .frame(width: 50, height: 50)
+            }
+        }
+    }
+}
+
+
 struct ContentView: View {
     @State private var cameraPosition = SCNVector3(0, 0, 0) // Updated default position
     @State private var cameraFOV = CGFloat(0.0) // Updated default field of view to 90 degrees
     @State private var focusDistance = CGFloat(350)
-
+    
     var body: some View {
         ZStack {
             Color.white
@@ -35,9 +70,36 @@ struct ContentView: View {
                     .bold()
                     .monospaced()
                     .foregroundStyle(.white)
+                
+                ArrowControls(
+                    moveLeft: { moveCamera(direction: .left) },
+                    moveRight: { moveCamera(direction: .right) },
+                    moveForward: { moveCamera(direction: .forward) },
+                    moveBackward: { moveCamera(direction: .backward) }
+                )
+                .padding()
             }
-            .padding()
         }
+    }
+
+    enum CameraDirection {
+        case left, right, forward, backward
+    }
+
+    func moveCamera(direction: CameraDirection) {
+        var moveVector = SCNVector3()
+        switch direction {
+        case .left:
+            moveVector = SCNVector3(cameraPosition.x - 1, cameraPosition.y, cameraPosition.z)
+        case .right:
+            moveVector = SCNVector3(cameraPosition.x + 1, cameraPosition.y, cameraPosition.z)
+        case .forward:
+            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z + 1)
+        case .backward:
+            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z - 1)
+        }
+        // This just updates the state, you'll need to apply this to the SceneKit camera node
+        cameraPosition = moveVector
     }
 }
 
@@ -150,6 +212,17 @@ struct SceneContainer: UIViewRepresentable {
         cameraNode.camera?.fieldOfView = 95.0 // Set FOV to 90 degrees
         
         applyShaderModifier(to: scene)
+        
+        // Assign a physics body to the camera node for collision detection
+        cameraNode.physicsBody = SCNPhysicsBody(type: .kinematic, shape: SCNPhysicsShape(node: cameraNode, options: nil))
+        cameraNode.physicsBody?.categoryBitMask = CollisionCategory.camera.rawValue
+        cameraNode.physicsBody?.contactTestBitMask = CollisionCategory.geometry.rawValue
+
+    }
+    
+    enum CollisionCategory: Int {
+        case camera = 1  // equivalent to 1 << 0
+        case geometry = 2  // equivalent to 1 << 1
     }
 
     private func applyShaderModifier(to scene: SCNScene) {
@@ -210,12 +283,26 @@ struct SceneContainer: UIViewRepresentable {
         func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
             guard let scnView = renderer as? SCNView, let cameraNode = renderer.pointOfView else { return }
 
-            // Ensure UI interactions are on the main thread
             DispatchQueue.main.async {
                 let centerPoint = CGPoint(x: scnView.bounds.midX, y: scnView.bounds.midY)
-                self.performHitTest(scnView, centerPoint: centerPoint, cameraNode: cameraNode)
+                                self.performHitTest(scnView, centerPoint: centerPoint, cameraNode: cameraNode)
+                
+                let proposedPosition = self.calculateNewCameraPosition() // This needs to be a proper calculation
+                let moveAction = SCNAction.move(to: proposedPosition, duration: 0.1)
+                moveAction.timingMode = .easeInEaseOut
+
+                cameraNode.runAction(moveAction) { [weak self] in
+                    guard let self = self else { return }
+                    // Collision handling is managed by SCNPhysicsContactDelegate, not here.
+
+                    self.parent.cameraPosition = cameraNode.position
+                    if let fov = cameraNode.camera?.fieldOfView {
+                        self.parent.cameraFOV = fov
+                    }
+                }
             }
         }
+
 
         private func performHitTest(_ scnView: SCNView, centerPoint: CGPoint, cameraNode: SCNNode) {
             let hitResults = scnView.hitTest(centerPoint, options: nil)
@@ -260,6 +347,44 @@ extension SCNVector3 {
         return "(\(x), \(y), \(z))"
     }
 }
+
+extension SceneContainer.Coordinator: SCNPhysicsContactDelegate {
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        let nodes = [contact.nodeA, contact.nodeB]
+        if nodes.contains(where: { $0 == parent.cameraNode }) {
+            // Collision with the camera has started
+            print("Collision Started with Camera")
+            // Handle the collision, e.g., stop movement, adjust camera properties, etc.
+        }
+    }
+
+    func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
+        let nodes = [contact.nodeA, contact.nodeB]
+        if nodes.contains(where: { $0 == parent.cameraNode }) {
+            // Collision with the camera has ended
+            print("Collision Ended with Camera")
+            // Resume normal operations or adjust camera settings as necessary
+        }
+    }
+}
+
+
+extension SceneContainer.Coordinator {
+    func calculateNewCameraPosition() -> SCNVector3 {
+        // Example of moving forward while checking for obstacles
+        let forwardMovement = SCNVector3(0, 0, -1)  // Move forward along z-axis
+        let potentialNewPosition = SCNVector3(
+            x: parent.cameraNode.position.x + forwardMovement.x,
+            y: parent.cameraNode.position.y + forwardMovement.y,
+            z: parent.cameraNode.position.z + forwardMovement.z
+        )
+
+        // Here you can check if the new position would result in a collision
+        // If a collision is expected, you can adjust the position or cancel the movement
+        return potentialNewPosition  // Adjust as needed based on collision checks
+    }
+}
+
 
 #Preview {
     ContentView()
