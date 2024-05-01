@@ -6,7 +6,7 @@ enum CameraDirection {
 }
 
 struct ContentView: View {
-    @State private var cameraPosition = SCNVector3(190, 1182, 393)
+    @State private var cameraPosition = SCNVector3(190, 1000, 78)
     @State private var cameraFOV = CGFloat(90.0)
     @State private var focusDistance = CGFloat(350)
 
@@ -224,6 +224,9 @@ struct SceneContainer: UIViewRepresentable {
     private func setupGestures(_ scnView: SCNView, context: Context) {
        let panGesture = UIPanGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePan(_:)))
        scnView.addGestureRecognizer(panGesture)
+        
+    let pinchGesture = UIPinchGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePinch(_:)))
+            scnView.addGestureRecognizer(pinchGesture)
    }
     
     func updateUIView(_ scnView: SCNView, context: Context) {
@@ -318,6 +321,14 @@ struct SceneContainer: UIViewRepresentable {
         init(_ parent: SceneContainer) {
             self.parent = parent
         }
+        
+        @objc func handlePinch(_ gesture: UIPinchGestureRecognizer) {
+            let scale = CGFloat(gesture.scale)  // Convert scale to CGFloat if necessary
+            let newFOV = max(15, min(90, parent.cameraFOV / scale))  // Ensure all operands are CGFloat
+            parent.cameraFOV = newFOV
+            gesture.scale = 1.0  // Reset scale for continuous adjustment
+        }
+
         
         @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
             let translation = gesture.translation(in: gesture.view)
