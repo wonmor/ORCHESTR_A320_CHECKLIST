@@ -258,7 +258,7 @@ struct SceneContainer: UIViewRepresentable {
         cameraNode.camera = SCNCamera()
         setupDepthOfField(cameraNode.camera)
         cameraNode.position = cameraPosition// Updated default camera position
-        cameraNode.look(at: SCNVector3(x: -36.5, y: 906, z: 135))
+        cameraNode.look(at: center)
         scene.rootNode.addChildNode(cameraNode)
         cameraNode.camera?.fieldOfView = 95.0 // Set FOV to 90 degrees
         
