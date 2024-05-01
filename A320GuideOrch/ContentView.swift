@@ -164,6 +164,7 @@ struct SceneContainer: UIViewRepresentable {
     @Binding var focusDistance: CGFloat
     
     @State private var cameraNode = SCNNode()
+    @State private var lastPanLocation: CGPoint? = nil
     
     private func configureLight(scene: SCNScene) {
         let lightNode = SCNNode()
@@ -209,14 +210,21 @@ struct SceneContainer: UIViewRepresentable {
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
         scnView.scene = loadScene()
-        scnView.allowsCameraControl = true
+        scnView.allowsCameraControl = false
         scnView.autoenablesDefaultLighting = true
         scnView.backgroundColor = UIColor.white
+        
+        setupGestures(scnView, context: context)
         
         context.coordinator.setupObservers(for: scnView)
         
         return scnView
     }
+    
+    private func setupGestures(_ scnView: SCNView, context: Context) {
+       let panGesture = UIPanGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePan(_:)))
+       scnView.addGestureRecognizer(panGesture)
+   }
     
     func updateUIView(_ scnView: SCNView, context: Context) {
         scnView.pointOfView?.position = cameraPosition
@@ -309,6 +317,25 @@ struct SceneContainer: UIViewRepresentable {
         
         init(_ parent: SceneContainer) {
             self.parent = parent
+        }
+        
+        @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
+            let translation = gesture.translation(in: gesture.view)
+            let deltaAngleX = Float(translation.x) / 100.0 // Sensitivity adjustment
+            let deltaAngleY = Float(translation.y) / 100.0 // Sensitivity adjustment
+            
+            if let view = gesture.view as? SCNView, let cameraNode = view.pointOfView {
+                var eulerAngles = cameraNode.eulerAngles
+                eulerAngles.y -= deltaAngleX
+                eulerAngles.x -= deltaAngleY
+                
+                // Clamp the x rotation to prevent flipping
+                eulerAngles.x = max(min(eulerAngles.x, Float.pi/2), -Float.pi/2)
+                
+                cameraNode.eulerAngles = eulerAngles
+                
+                gesture.setTranslation(CGPoint.zero, in: view)
+            }
         }
         
         func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
