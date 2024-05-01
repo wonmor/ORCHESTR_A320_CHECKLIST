@@ -37,7 +37,7 @@ struct ArrowControls: View {
 
 
 struct ContentView: View {
-    @State private var cameraPosition = SCNVector3(0, 0, 0) // Updated default position
+    @State private var cameraPosition = SCNVector3(190, 1182, 393)  // Updated default position
     @State private var cameraFOV = CGFloat(0.0) // Updated default field of view to 90 degrees
     @State private var focusDistance = CGFloat(350)
     
@@ -87,16 +87,17 @@ struct ContentView: View {
     }
     
     func moveCamera(direction: CameraDirection) {
+        let movementStep: Float = 5 // Increase this value to make each movement more drastic
         var moveVector = SCNVector3()
         switch direction {
         case .left:
-            moveVector = SCNVector3(cameraPosition.x - 1, cameraPosition.y, cameraPosition.z)
+            moveVector = SCNVector3(cameraPosition.x - movementStep, cameraPosition.y, cameraPosition.z)
         case .right:
-            moveVector = SCNVector3(cameraPosition.x + 1, cameraPosition.y, cameraPosition.z)
+            moveVector = SCNVector3(cameraPosition.x + movementStep, cameraPosition.y, cameraPosition.z)
         case .forward:
-            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z + 1)
+            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z + movementStep)
         case .backward:
-            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z - 1)
+            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z - movementStep)
         }
         // This just updates the state, you'll need to apply this to the SceneKit camera node
         cameraPosition = moveVector
@@ -167,8 +168,6 @@ struct SceneContainer: UIViewRepresentable {
         }
     }
     
-    
-    
     func makeUIView(context: Context) -> SCNView {
         let scnView = SCNView()
         scnView.scene = loadScene()
@@ -182,7 +181,7 @@ struct SceneContainer: UIViewRepresentable {
     }
     
     func updateUIView(_ scnView: SCNView, context: Context) {
-        // Updates are managed by SceneKit's rendering loop and observers
+        scnView.pointOfView?.position = cameraPosition
     }
     
     func makeCoordinator() -> Coordinator {
@@ -206,18 +205,12 @@ struct SceneContainer: UIViewRepresentable {
         
         cameraNode.camera = SCNCamera()
         setupDepthOfField(cameraNode.camera)
-        cameraNode.position = SCNVector3(190, 1182, 393) // Updated default camera position
+        cameraNode.position = cameraPosition// Updated default camera position
         cameraNode.look(at: center)
         scene.rootNode.addChildNode(cameraNode)
         cameraNode.camera?.fieldOfView = 95.0 // Set FOV to 90 degrees
         
         applyShaderModifier(to: scene)
-        
-        // Assign a physics body to the camera node for collision detection
-        cameraNode.physicsBody = SCNPhysicsBody(type: .kinematic, shape: SCNPhysicsShape(node: cameraNode, options: nil))
-        cameraNode.physicsBody?.categoryBitMask = CollisionCategory.camera.rawValue
-        cameraNode.physicsBody?.contactTestBitMask = CollisionCategory.geometry.rawValue
-        
     }
     
     enum CollisionCategory: Int {
@@ -287,18 +280,8 @@ struct SceneContainer: UIViewRepresentable {
                 let centerPoint = CGPoint(x: scnView.bounds.midX, y: scnView.bounds.midY)
                 self.performHitTest(scnView, centerPoint: centerPoint, cameraNode: cameraNode)
                 
-                let proposedPosition = self.calculateNewCameraPosition() // This needs to be a proper calculation
-                let moveAction = SCNAction.move(to: proposedPosition, duration: 0.1)
-                moveAction.timingMode = .easeInEaseOut
-                
-                cameraNode.runAction(moveAction) { [weak self] in
-                    guard let self = self else { return }
-                    // Collision handling is managed by SCNPhysicsContactDelegate, not here.
-                    
-                    self.parent.cameraPosition = cameraNode.position
-                    if let fov = cameraNode.camera?.fieldOfView {
-                        self.parent.cameraFOV = fov
-                    }
+                if let fov = cameraNode.camera?.fieldOfView {
+                    self.parent.cameraFOV = fov
                 }
             }
         }
@@ -387,26 +370,6 @@ struct SceneContainer: UIViewRepresentable {
 extension SCNVector3 {
     var description: String {
         return "(\(x), \(y), \(z))"
-    }
-}
-
-extension SceneContainer.Coordinator: SCNPhysicsContactDelegate {
-    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        let nodes = [contact.nodeA, contact.nodeB]
-        if nodes.contains(where: { $0 == parent.cameraNode }) {
-            // Collision with the camera has started
-            print("Collision Started with Camera")
-            // Handle the collision, e.g., stop movement, adjust camera properties, etc.
-        }
-    }
-    
-    func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
-        let nodes = [contact.nodeA, contact.nodeB]
-        if nodes.contains(where: { $0 == parent.cameraNode }) {
-            // Collision with the camera has ended
-            print("Collision Ended with Camera")
-            // Resume normal operations or adjust camera settings as necessary
-        }
     }
 }
 
