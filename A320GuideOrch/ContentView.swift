@@ -87,19 +87,21 @@ struct ContentView: View {
     }
     
     func moveCamera(direction: CameraDirection) {
-        let movementStep: Float = 5 // Increase this value to make each movement more drastic
+        let movementStep: Float = 10 // The distance each button press moves the camera
+
         var moveVector = SCNVector3()
         switch direction {
         case .left:
-            moveVector = SCNVector3(cameraPosition.x - movementStep, cameraPosition.y, cameraPosition.z)
-        case .right:
-            moveVector = SCNVector3(cameraPosition.x + movementStep, cameraPosition.y, cameraPosition.z)
-        case .forward:
             moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z + movementStep)
-        case .backward:
+        case .right:
             moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z - movementStep)
+        case .forward:
+            moveVector = SCNVector3(cameraPosition.x - movementStep, cameraPosition.y, cameraPosition.z)
+        case .backward:
+            moveVector = SCNVector3(cameraPosition.x + movementStep, cameraPosition.y, cameraPosition.z)
         }
-        // This just updates the state, you'll need to apply this to the SceneKit camera node
+
+        // Update the camera position state
         cameraPosition = moveVector
     }
 }
