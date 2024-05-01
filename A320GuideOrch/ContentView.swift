@@ -1,108 +1,144 @@
 import SwiftUI
 import SceneKit
 
-struct ArrowControls: View {
-    var moveLeft: () -> Void
-    var moveRight: () -> Void
-    var moveForward: () -> Void
-    var moveBackward: () -> Void
-    
-    var body: some View {
-        HStack(spacing: 20) {
-            Button(action: moveLeft) {
-                Image(systemName: "arrow.left.circle.fill")
-                    .resizable()
-                    .frame(width: 50, height: 50)
-            }
-            VStack {
-                Button(action: moveForward) {
-                    Image(systemName: "arrow.up.circle.fill")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                }
-                Button(action: moveBackward) {
-                    Image(systemName: "arrow.down.circle.fill")
-                        .resizable()
-                        .frame(width: 50, height: 50)
-                }
-            }
-            Button(action: moveRight) {
-                Image(systemName: "arrow.right.circle.fill")
-                    .resizable()
-                    .frame(width: 50, height: 50)
-            }
-        }
-    }
+enum CameraDirection {
+    case left, right, forward, backward
 }
 
-
 struct ContentView: View {
-    @State private var cameraPosition = SCNVector3(190, 1182, 393)  // Updated default position
-    @State private var cameraFOV = CGFloat(0.0) // Updated default field of view to 90 degrees
+    @State private var cameraPosition = SCNVector3(190, 1182, 393)
+    @State private var cameraFOV = CGFloat(90.0)
     @State private var focusDistance = CGFloat(350)
-    
+
+    @State private var movementDirection: CameraDirection? = nil
+    @State private var movementSpeed: Float = 0.0
+    @State private var maxSpeed: Float = 30.0
+    @State private var acceleration: Float = 5.0
+    @State private var deceleration: Float = 2.5
+    @State private var movementTimer: Timer?
+
     var body: some View {
         ZStack {
-            Color.white
-                .ignoresSafeArea()
-            
+            Color.white.ignoresSafeArea()
             SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV, focusDistance: $focusDistance)
                 .opacity(0.85)
                 .ignoresSafeArea()
-            
             CrosshairView()
                 .frame(width: 20, height: 20)
-            
             VStack {
                 Spacer()
-                
-                Text("Camera Position: \(cameraPosition.description)")
-                    .bold()
-                    .monospaced()
-                    .foregroundStyle(.white)
-                
-                Text("Camera FOV: \(cameraFOV, specifier: "%.2f") degrees")
-                    .bold()
-                    .monospaced()
-                    .foregroundStyle(.white)
-                
-                Text("Focus Distance: \(focusDistance, specifier: "%.2f")")
-                    .bold()
-                    .monospaced()
-                    .foregroundStyle(.white)
-                
+                Text("Camera Position: \(cameraPosition.description)").bold().monospaced().foregroundStyle(.white)
+                Text("Camera FOV: \(cameraFOV, specifier: "%.2f") degrees").bold().monospaced().foregroundStyle(.white)
+                Text("Focus Distance: \(focusDistance, specifier: "%.2f")").bold().monospaced().foregroundStyle(.white)
                 ArrowControls(
-                    moveLeft: { moveCamera(direction: .left) },
-                    moveRight: { moveCamera(direction: .right) },
-                    moveForward: { moveCamera(direction: .forward) },
-                    moveBackward: { moveCamera(direction: .backward) }
+                    startMoving: startMoving,
+                    stopMoving: stopMoving
                 )
                 .padding()
             }
         }
     }
-    
-    enum CameraDirection {
-        case left, right, forward, backward
+
+    func startMoving(direction: CameraDirection) {
+        movementDirection = direction
+        if movementTimer == nil {
+            movementTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [self] timer in
+                DispatchQueue.main.async {
+                    self.updateMovement()
+                }
+            }
+        }
     }
-    
-    func moveCamera(direction: CameraDirection) {
-        let movementStep: Float = 10 // The distance each button press moves the camera
+
+
+    func stopMoving() {
+        movementDirection = nil  // Mark the end of movement in this direction
+    }
+
+    func updateMovement() {
+        if movementDirection != nil {
+            if movementSpeed < maxSpeed {
+                movementSpeed += acceleration
+            }
+        } else {
+            if movementSpeed > 0 {
+                movementSpeed -= deceleration
+                if movementSpeed < 0 {
+                    movementSpeed = 0  // Prevent movement speed from going negative
+                    movementTimer?.invalidate()
+                    movementTimer = nil
+                }
+            }
+        }
+        moveCamera()
+    }
+
+
+    func moveCamera() {
+        guard let direction = movementDirection, movementSpeed > 0 else { return }
 
         var moveVector = SCNVector3()
         switch direction {
         case .left:
-            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z + movementStep)
+            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z + movementSpeed)
         case .right:
-            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z - movementStep)
+            moveVector = SCNVector3(cameraPosition.x, cameraPosition.y, cameraPosition.z - movementSpeed)
         case .forward:
-            moveVector = SCNVector3(cameraPosition.x - movementStep, cameraPosition.y, cameraPosition.z)
+            moveVector = SCNVector3(cameraPosition.x - movementSpeed, cameraPosition.y, cameraPosition.z)
         case .backward:
-            moveVector = SCNVector3(cameraPosition.x + movementStep, cameraPosition.y, cameraPosition.z)
+            moveVector = SCNVector3(cameraPosition.x + movementSpeed, cameraPosition.y, cameraPosition.z)
         }
 
-        // Update the camera position state
         cameraPosition = moveVector
+    }
+}
+
+// Modify ArrowControls to accept startMoving and stopMoving closures
+struct ArrowControls: View {
+    var startMoving: (CameraDirection) -> Void
+    var stopMoving: () -> Void
+
+    var body: some View {
+        HStack(spacing: 20) {
+            Button(action: { startMoving(.left) }, label: {
+                Image(systemName: "arrow.left.circle.fill").resizable().frame(width: 50, height: 50)
+            }).buttonStyle(.bordered).onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                if pressing {
+                    startMoving(.left)
+                } else {
+                    stopMoving()
+                }
+            }, perform: {})
+            VStack {
+                Button(action: { startMoving(.forward) }, label: {
+                    Image(systemName: "arrow.up.circle.fill").resizable().frame(width: 50, height: 50)
+                }).buttonStyle(.bordered).onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                    if pressing {
+                        startMoving(.forward)
+                    } else {
+                        stopMoving()
+                    }
+                }, perform: {})
+                Button(action: { startMoving(.backward) }, label: {
+                    Image(systemName: "arrow.down.circle.fill").resizable().frame(width: 50, height: 50)
+                }).buttonStyle(.bordered).onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                    if pressing {
+                        startMoving(.backward)
+                    } else {
+                        stopMoving()
+                    }
+                }, perform: {})
+            }
+            Button(action: { startMoving(.right) }, label: {
+                Image(systemName: "arrow.right.circle.fill").resizable().frame(width: 50, height: 50)
+            }).buttonStyle(.bordered).onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                if pressing {
+                    startMoving(.right)
+                } else {
+                    stopMoving()
+                }
+            }, perform: {})
+        }
     }
 }
 
