@@ -9,6 +9,7 @@ struct ContentView: View {
     @State private var cameraPosition = SCNVector3(190, 1000, 78)
     @State private var cameraFOV = CGFloat(90.0)
     @State private var focusDistance = CGFloat(350)
+    @State private var hitPosition = SCNVector3Zero  // Default to zero vector
 
     @State private var movementDirection: CameraDirection? = nil
     @State private var movementSpeed: Float = 0.0
@@ -20,7 +21,7 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
-            SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV, focusDistance: $focusDistance)
+            SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV, focusDistance: $focusDistance, hitPosition: $hitPosition)
                 .opacity(0.85)
                 .ignoresSafeArea()
             CrosshairView()
@@ -30,6 +31,7 @@ struct ContentView: View {
                 Text("Camera Position: \(cameraPosition.description)").bold().monospaced().foregroundStyle(.white)
                 Text("Camera FOV: \(cameraFOV, specifier: "%.2f") degrees").bold().monospaced().foregroundStyle(.white)
                 Text("Focus Distance: \(focusDistance, specifier: "%.2f")").bold().monospaced().foregroundStyle(.white)
+                Text("Hit Position: \(hitPosition.description)").bold().monospaced().foregroundStyle(.white)
                 ArrowControls(
                     startMoving: startMoving,
                     stopMoving: stopMoving
@@ -162,6 +164,7 @@ struct SceneContainer: UIViewRepresentable {
     @Binding var cameraPosition: SCNVector3
     @Binding var cameraFOV: CGFloat
     @Binding var focusDistance: CGFloat
+    @Binding var hitPosition: SCNVector3
     
     @State private var cameraNode = SCNNode()
     @State private var lastPanLocation: CGPoint? = nil
@@ -255,7 +258,7 @@ struct SceneContainer: UIViewRepresentable {
         cameraNode.camera = SCNCamera()
         setupDepthOfField(cameraNode.camera)
         cameraNode.position = cameraPosition// Updated default camera position
-        cameraNode.look(at: center)
+        cameraNode.look(at: SCNVector3(x: -36.5, y: 906, z: 135))
         scene.rootNode.addChildNode(cameraNode)
         cameraNode.camera?.fieldOfView = 95.0 // Set FOV to 90 degrees
         
@@ -408,6 +411,8 @@ struct SceneContainer: UIViewRepresentable {
             let hitResults = scnView.hitTest(centerPoint, options: nil)
             
             if let closestHit = hitResults.first {
+                self.parent.hitPosition = closestHit.worldCoordinates
+                
                 createRectangleAtHitResult(hitResult: closestHit, scene: scnView.scene!)
                 let hitPosition = closestHit.worldCoordinates
                 let cameraPosition = cameraNode.position
