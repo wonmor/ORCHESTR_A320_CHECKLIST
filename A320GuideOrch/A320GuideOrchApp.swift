@@ -12,6 +12,7 @@ struct A320GuideOrchApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.dark)
         }
     }
 }
