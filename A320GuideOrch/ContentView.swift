@@ -83,6 +83,8 @@ struct ContentView: View {
     @State private var acceleration: Float = 5.0
     @State private var deceleration: Float = 2.5
     @State private var movementTimer: Timer?
+    
+    @State private var type = BottomSheetDisplayType.none
 
     var body: some View {
         ZStack {
@@ -100,15 +102,16 @@ struct ContentView: View {
             
             VStack {
                 Spacer()
-                Text("Camera Position: \(cameraPosition.description)").bold().monospaced().foregroundStyle(.white)
-                Text("Camera FOV: \(cameraFOV, specifier: "%.2f") degrees").bold().monospaced().foregroundStyle(.white)
-                Text("Focus Distance: \(focusDistance, specifier: "%.2f")").bold().monospaced().foregroundStyle(.white)
                 Text("Hit Position: \(hitPosition.description)").bold().monospaced().foregroundStyle(.white)
                 ArrowControls(
                     startMoving: startMoving,
                     stopMoving: stopMoving
                 )
                 .padding()
+                
+                BottomSheetAdvanceView(displayType: $type, maxHeight: 600) {
+                    Rectangle().fill(Color.gray)
+                }.edgesIgnoringSafeArea(.all)
             }
         }
     }
@@ -378,12 +381,13 @@ struct SceneContainer: UIViewRepresentable {
         }
         
         @objc func handlePinch(_ gesture: UIPinchGestureRecognizer) {
-            let scale = CGFloat(gesture.scale)  // Convert scale to CGFloat if necessary
-            let newFOV = max(15, min(90, parent.cameraFOV / scale))  // Ensure all operands are CGFloat
-            parent.cameraFOV = newFOV
-            gesture.scale = 1.0  // Reset scale for continuous adjustment
+            if gesture.state == .changed {
+                let scale = gesture.scale
+                let newFOV = max(15, min(90, parent.cameraFOV / CGFloat(scale)))
+                parent.cameraFOV = newFOV
+                gesture.scale = 1.0  // Reset scale to ensure smooth scaling in continuous gestures
+            }
         }
-
         
         @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
             let translation = gesture.translation(in: gesture.view)

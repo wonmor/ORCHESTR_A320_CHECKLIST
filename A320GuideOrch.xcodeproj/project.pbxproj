@@ -17,6 +17,7 @@
 		96563C772BDEFDE100699F4C /* a320-cockpit.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 96563C742BDEFDE100699F4C /* a320-cockpit.usdz */; };
 		96563C782BDEFDE100699F4C /* a320-plane.obj in Resources */ = {isa = PBXBuildFile; fileRef = 96563C752BDEFDE100699F4C /* a320-plane.obj */; };
 		96563C792BDEFDE100699F4C /* a320-cockpit.scn in Resources */ = {isa = PBXBuildFile; fileRef = 96563C762BDEFDE100699F4C /* a320-cockpit.scn */; };
+		96A54AA52BE319A0009412A4 /* BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A54AA42BE319A0009412A4 /* BottomSheetView.swift */; };
 		96C291162BE07FAA000A68F4 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 96C291152BE07FAA000A68F4 /* SwiftSoup */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,7 @@
 		96563C742BDEFDE100699F4C /* a320-cockpit.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = "a320-cockpit.usdz"; sourceTree = "<group>"; };
 		96563C752BDEFDE100699F4C /* a320-plane.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "a320-plane.obj"; sourceTree = "<group>"; };
 		96563C762BDEFDE100699F4C /* a320-cockpit.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = "a320-cockpit.scn"; sourceTree = "<group>"; };
+		96A54AA42BE319A0009412A4 /* BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 				96563C752BDEFDE100699F4C /* a320-plane.obj */,
 				96563C4A2BDEFDD000699F4C /* A320GuideOrchApp.swift */,
 				96563C4C2BDEFDD000699F4C /* ContentView.swift */,
+				96A54AA42BE319A0009412A4 /* BottomSheetView.swift */,
 				96563C4E2BDEFDD100699F4C /* Assets.xcassets */,
 				96563C502BDEFDD100699F4C /* Preview Content */,
 			);
@@ -279,6 +282,7 @@
 			files = (
 				96563C4D2BDEFDD000699F4C /* ContentView.swift in Sources */,
 				96563C4B2BDEFDD000699F4C /* A320GuideOrchApp.swift in Sources */,
+				96A54AA52BE319A0009412A4 /* BottomSheetView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
