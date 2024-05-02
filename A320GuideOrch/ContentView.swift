@@ -138,7 +138,7 @@ struct ContentView: View {
             }
             
             BottomSheetAdvanceView(displayType: $type, maxHeight: 600) {
-                Rectangle().fill(Color.gray)
+                Rectangle().fill(Color.black)
             }.edgesIgnoringSafeArea(.all)
         }
     }
@@ -250,13 +250,31 @@ struct SceneContainer: UIViewRepresentable {
     @Binding var detectedTexts: [String]
     
     @State private var targets: [Vector3Key: String] = [
-        Vector3Key(SCNVector3(-600, 1053, 19)): "LIGHT PANEL",
+        Vector3Key(SCNVector3(-600, 1053, 19)): "EXTERIOR LIGHTS",
         Vector3Key(SCNVector3(-577, 551, 70)): "PILOT-SIDE FMS (MCDU)"
     ]
     
     @State private var cameraNode = SCNNode()
     @State private var lastPanLocation: CGPoint? = nil
     
+    private func createTargetSphere(at position: SCNVector3) -> SCNNode {
+        let sphere = SCNSphere(radius: 30)  // Set the radius as needed
+        sphere.firstMaterial?.diffuse.contents = UIColor.white
+        sphere.firstMaterial?.transparency = 0.5  // Set semi-transparency
+        sphere.firstMaterial?.isDoubleSided = true
+
+        let sphereNode = SCNNode(geometry: sphere)
+        sphereNode.position = position
+        return sphereNode
+    }
+    
+    private func addTargetsToScene(_ scene: SCNScene) {
+        for (key, _) in targets {
+            let sphereNode = createTargetSphere(at: key.vector)  // Example using cyan color for all spheres
+            scene.rootNode.addChildNode(sphereNode)
+        }
+    }
+
     private func configureLight(scene: SCNScene) {
         let lightNode = SCNNode()
         lightNode.light = SCNLight()
@@ -290,7 +308,6 @@ struct SceneContainer: UIViewRepresentable {
         scnView.scene = loadScene()
         scnView.allowsCameraControl = true
         scnView.autoenablesDefaultLighting = true
-        scnView.backgroundColor = UIColor.black  // Or any suitable color
         
         configureLight(scene: scnView.scene!)
         scnView.scene?.rootNode.childNodes.forEach { node in
@@ -303,7 +320,7 @@ struct SceneContainer: UIViewRepresentable {
         scnView.scene = loadScene()
         scnView.allowsCameraControl = false
         scnView.autoenablesDefaultLighting = true
-        scnView.backgroundColor = UIColor.black
+        scnView.backgroundColor = UIColor.white
         
         setupGestures(scnView, context: context)
         
@@ -332,6 +349,7 @@ struct SceneContainer: UIViewRepresentable {
         let scene = SCNScene(named: "a320-cockpit.scn")!
         configureCamera(scene)
         configureLight(scene: scene)
+        addTargetsToScene(scene)
         return scene
     }
     
@@ -573,4 +591,5 @@ extension SceneContainer.Coordinator {
 
 #Preview {
     ContentView()
+        .preferredColorScheme(.dark)
 }

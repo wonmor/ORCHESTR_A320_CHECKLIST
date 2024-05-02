@@ -90,7 +90,8 @@ struct BottomSheetView_Previews: PreviewProvider {
     
     static var previews: some View {
         BottomSheetAdvanceView(displayType: $type, maxHeight: 600) {
-            Rectangle().fill(Color.gray)
+            Rectangle().fill(Color.black)
         }.edgesIgnoringSafeArea(.all)
+            .preferredColorScheme(.dark)
     }
 }
