@@ -22,10 +22,9 @@ struct EdgeButtons: View {
                         Text("T")
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .foregroundColor(.black)
+                    .foregroundColor(.white)
                     .bold()
                 }
-                .background(Color.white.opacity(0.5))
                 .buttonStyle(.bordered)
                 .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
                     if pressing {
@@ -52,10 +51,9 @@ struct EdgeButtons: View {
                         Text("T")
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .foregroundColor(.black)
+                    .foregroundColor(.white)
                     .bold()
                 }
-                .background(Color.white.opacity(0.5))
                 .buttonStyle(.bordered)
                 .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
                     if pressing {
