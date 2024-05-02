@@ -108,11 +108,12 @@ struct ContentView: View {
                     stopMoving: stopMoving
                 )
                 .padding()
-                
-                BottomSheetAdvanceView(displayType: $type, maxHeight: 600) {
-                    Rectangle().fill(Color.gray)
-                }.edgesIgnoringSafeArea(.all)
+                .padding(.bottom, 60)
             }
+            
+            BottomSheetAdvanceView(displayType: $type, maxHeight: 600) {
+                Rectangle().fill(Color.gray)
+            }.edgesIgnoringSafeArea(.all)
         }
     }
 
