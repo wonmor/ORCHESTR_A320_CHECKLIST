@@ -8,7 +8,7 @@ enum CameraDirection {
 struct EdgeButtons: View {
     var startMoving: (CameraDirection) -> Void
     var stopMoving: () -> Void
-
+    
     var body: some View {
         HStack(spacing: 0) {
             // Left button
@@ -70,13 +70,30 @@ struct EdgeButtons: View {
     }
 }
 
+struct Vector3Key: Hashable {
+    let vector: SCNVector3
+    
+    init(_ vector: SCNVector3) {
+        self.vector = vector
+    }
+    
+    static func == (lhs: Vector3Key, rhs: Vector3Key) -> Bool {
+        return lhs.vector.x == rhs.vector.x && lhs.vector.y == rhs.vector.y && lhs.vector.z == rhs.vector.z
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(vector.x)
+        hasher.combine(vector.y)
+        hasher.combine(vector.z)
+    }
+}
 
 struct ContentView: View {
     @State private var cameraPosition = SCNVector3(190, 1000, 78)
     @State private var cameraFOV = CGFloat(90.0)
     @State private var focusDistance = CGFloat(350)
     @State private var hitPosition = SCNVector3Zero  // Default to zero vector
-
+    
     @State private var movementDirection: CameraDirection? = nil
     @State private var movementSpeed: Float = 0.0
     @State private var maxSpeed: Float = 30.0
@@ -85,12 +102,13 @@ struct ContentView: View {
     @State private var movementTimer: Timer?
     
     @State private var type = BottomSheetDisplayType.none
-
+    @State private var detectedTexts: [String] = []
+    
     var body: some View {
         ZStack {
-            Color.white.ignoresSafeArea()
-            SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV, focusDistance: $focusDistance, hitPosition: $hitPosition)
-                .opacity(0.85)
+            Color.black.ignoresSafeArea()
+            SceneContainer(cameraPosition: $cameraPosition, cameraFOV: $cameraFOV, focusDistance: $focusDistance, hitPosition: $hitPosition, detectedTexts: $detectedTexts)
+                .opacity(0.65)
                 .ignoresSafeArea()
             CrosshairView()
                 .frame(width: 20, height: 20)
@@ -101,8 +119,16 @@ struct ContentView: View {
             )
             
             VStack {
-                Spacer()
-                Text("Hit Position: \(hitPosition.description)").bold().monospaced().foregroundStyle(.white)
+               Spacer()
+                Text(hitPosition.description).bold().monospaced().foregroundStyle(.white)
+                
+                if detectedTexts.isEmpty {
+                    Text("POINT AT AN OBJECT").bold().foregroundColor(.white).font(.largeTitle).monospaced().multilineTextAlignment(.center)
+                }
+            
+                ForEach(detectedTexts, id: \.self) { text in
+                    Text(text).bold().foregroundColor(.white).font(.largeTitle).monospaced().multilineTextAlignment(.center)
+                }
                 ArrowControls(
                     startMoving: startMoving,
                     stopMoving: stopMoving
@@ -116,7 +142,7 @@ struct ContentView: View {
             }.edgesIgnoringSafeArea(.all)
         }
     }
-
+    
     func startMoving(direction: CameraDirection) {
         movementDirection = direction
         if movementTimer == nil {
@@ -127,12 +153,12 @@ struct ContentView: View {
             }
         }
     }
-
-
+    
+    
     func stopMoving() {
         movementDirection = nil  // Mark the end of movement in this direction
     }
-
+    
     func updateMovement() {
         if movementDirection != nil {
             if movementSpeed < maxSpeed {
@@ -150,11 +176,11 @@ struct ContentView: View {
         }
         moveCamera()
     }
-
-
+    
+    
     func moveCamera() {
         guard let direction = movementDirection, movementSpeed > 0 else { return }
-
+        
         var moveVector = SCNVector3()
         switch direction {
         case .left:
@@ -166,7 +192,7 @@ struct ContentView: View {
         case .backward:
             moveVector = SCNVector3(cameraPosition.x + movementSpeed, cameraPosition.y, cameraPosition.z)
         }
-
+        
         cameraPosition = moveVector
     }
 }
@@ -175,7 +201,7 @@ struct ContentView: View {
 struct ArrowControls: View {
     var startMoving: (CameraDirection) -> Void
     var stopMoving: () -> Void
-
+    
     var body: some View {
         VStack {
             Button(action: { startMoving(.forward) }, label: {
@@ -221,6 +247,12 @@ struct SceneContainer: UIViewRepresentable {
     @Binding var cameraFOV: CGFloat
     @Binding var focusDistance: CGFloat
     @Binding var hitPosition: SCNVector3
+    @Binding var detectedTexts: [String]
+    
+    @State private var targets: [Vector3Key: String] = [
+        Vector3Key(SCNVector3(-600, 1053, 19)): "LIGHT PANEL",
+        Vector3Key(SCNVector3(-577, 551, 70)): "PILOT-SIDE FMS (MCDU)"
+    ]
     
     @State private var cameraNode = SCNNode()
     @State private var lastPanLocation: CGPoint? = nil
@@ -271,7 +303,7 @@ struct SceneContainer: UIViewRepresentable {
         scnView.scene = loadScene()
         scnView.allowsCameraControl = false
         scnView.autoenablesDefaultLighting = true
-        scnView.backgroundColor = UIColor.white
+        scnView.backgroundColor = UIColor.black
         
         setupGestures(scnView, context: context)
         
@@ -281,12 +313,12 @@ struct SceneContainer: UIViewRepresentable {
     }
     
     private func setupGestures(_ scnView: SCNView, context: Context) {
-       let panGesture = UIPanGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePan(_:)))
-       scnView.addGestureRecognizer(panGesture)
+        let panGesture = UIPanGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePan(_:)))
+        scnView.addGestureRecognizer(panGesture)
         
-    let pinchGesture = UIPinchGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePinch(_:)))
-            scnView.addGestureRecognizer(pinchGesture)
-   }
+        let pinchGesture = UIPinchGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handlePinch(_:)))
+        scnView.addGestureRecognizer(pinchGesture)
+    }
     
     func updateUIView(_ scnView: SCNView, context: Context) {
         scnView.pointOfView?.position = cameraPosition
@@ -370,7 +402,7 @@ struct SceneContainer: UIViewRepresentable {
         camera?.focalLength = 50
         camera?.wantsDepthOfField = true
         camera?.focusDistance = 350
-        camera?.fStop = 1.2 * pow(10, -4) // f 1.2
+        camera?.fStop = 1.8 * pow(10, -4) // f 1.2
         camera?.fieldOfView = 60 // This line is redundant and can be removed since FOV is set above
     }
     
@@ -429,7 +461,7 @@ struct SceneContainer: UIViewRepresentable {
             let material = SCNMaterial()
             material.diffuse.contents = UIColor.white.withAlphaComponent(0.5) // Semi-transparent white
             rectangle.materials = [material]
-
+            
             // Border rectangle
             let borderSize: CGFloat = 1.05 // 5% larger
             let borderRectangle = SCNPlane(width: rectangle.width * borderSize, height: rectangle.height * borderSize)
@@ -437,17 +469,17 @@ struct SceneContainer: UIViewRepresentable {
             let borderMaterial = SCNMaterial()
             borderMaterial.diffuse.contents = UIColor.white
             borderRectangle.materials = [borderMaterial]
-
+            
             // Position border behind the main rectangle
             borderNode.position = SCNVector3(0, 0, -0.01) // Slightly behind the main rectangle
-
+            
             // Position the rectangle at the hit point
             rectangleNode.position = SCNVector3(
                 x: hitResult.worldCoordinates.x,
                 y: hitResult.worldCoordinates.y,
                 z: hitResult.worldCoordinates.z
             )
-
+            
             // Rotate to align with the surface normal
             let normal = hitResult.worldNormal
             rectangleNode.eulerAngles = SCNVector3(
@@ -455,22 +487,19 @@ struct SceneContainer: UIViewRepresentable {
                 y: 0,
                 z: atan2(normal.x, normal.y)
             )
-
+            
             // Add border node as a child to the main rectangle node
             rectangleNode.addChildNode(borderNode)
-
+            
             // Add the whole setup to the scene
             scene.rootNode.addChildNode(rectangleNode)
         }
-
+        
         
         private func performHitTest(_ scnView: SCNView, centerPoint: CGPoint, cameraNode: SCNNode) {
             let hitResults = scnView.hitTest(centerPoint, options: nil)
             
             if let closestHit = hitResults.first {
-                self.parent.hitPosition = closestHit.worldCoordinates
-                
-                createRectangleAtHitResult(hitResult: closestHit, scene: scnView.scene!)
                 let hitPosition = closestHit.worldCoordinates
                 let cameraPosition = cameraNode.position
                 let distance = sqrt(
@@ -479,28 +508,42 @@ struct SceneContainer: UIViewRepresentable {
                     pow(hitPosition.z - cameraPosition.z, 2)
                 )
                 
-                // Animate the change in focus distance
                 let duration: TimeInterval = 0.5 // Duration of the animation in seconds
                 SCNTransaction.begin()
                 SCNTransaction.animationDuration = duration
                 cameraNode.camera?.focusDistance = CGFloat(distance)
                 SCNTransaction.commit()
                 
-                DispatchQueue.main.async {
-                    self.parent.focusDistance = CGFloat(distance)
+                self.parent.hitPosition = closestHit.worldCoordinates
+                let tolerance: Float = 50
+                
+                var textsToShow: [String] = []
+                
+                for (targetPositionKey, displayText) in self.parent.targets {
+                    let distance = distanceBetween(closestHit.worldCoordinates, and: targetPositionKey.vector)
+                    if distance <= tolerance {
+                        textsToShow.append(displayText)
+                    }
                 }
-            }
-            
-            DispatchQueue.main.async {
-                self.parent.cameraPosition = cameraNode.position
-                if let fov = cameraNode.camera?.fieldOfView {
-                    self.parent.cameraFOV = fov
+                
+                DispatchQueue.main.async {
+                    self.parent.detectedTexts = textsToShow
+                    self.parent.focusDistance = CGFloat(distance)
                 }
             }
         }
         
+        
         func setupObservers(for scnView: SCNView) {
             scnView.delegate = self
+        }
+        
+        private func distanceBetween(_ point1: SCNVector3, and point2: SCNVector3) -> Float {
+            return sqrt(
+                pow(point1.x - point2.x, 2) +
+                pow(point1.y - point2.y, 2) +
+                pow(point1.z - point2.z, 2)
+            )
         }
     }
 }
