@@ -5,6 +5,74 @@ enum CameraDirection {
     case left, right, forward, backward
 }
 
+struct EdgeButtons: View {
+    var startMoving: (CameraDirection) -> Void
+    var stopMoving: () -> Void
+
+    var body: some View {
+        HStack(spacing: 0) {
+            // Left button
+            VStack {
+                Spacer()
+                Button(action: { startMoving(.left) }) {
+                    VStack {
+                        Text("L")
+                        Text("E")
+                        Text("F")
+                        Text("T")
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .foregroundColor(.black)
+                    .bold()
+                }
+                .background(Color.white.opacity(0.5))
+                .buttonStyle(.bordered)
+                .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                    if pressing {
+                        startMoving(.left)
+                    } else {
+                        stopMoving()
+                    }
+                }, perform: {})
+                Spacer()
+            }
+            .frame(width: 50) // Adjust width accordingly
+            
+            Spacer()
+            
+            // Right button
+            VStack {
+                Spacer()
+                Button(action: { startMoving(.right) }) {
+                    VStack {
+                        Text("R")
+                        Text("I")
+                        Text("G")
+                        Text("H")
+                        Text("T")
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .foregroundColor(.black)
+                    .bold()
+                }
+                .background(Color.white.opacity(0.5))
+                .buttonStyle(.bordered)
+                .onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
+                    if pressing {
+                        startMoving(.right)
+                    } else {
+                        stopMoving()
+                    }
+                }, perform: {})
+                Spacer()
+            }
+            .frame(width: 50) // Adjust width accordingly
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+
 struct ContentView: View {
     @State private var cameraPosition = SCNVector3(190, 1000, 78)
     @State private var cameraFOV = CGFloat(90.0)
@@ -26,6 +94,12 @@ struct ContentView: View {
                 .ignoresSafeArea()
             CrosshairView()
                 .frame(width: 20, height: 20)
+            
+            EdgeButtons(
+                startMoving: startMoving,
+                stopMoving: stopMoving
+            )
+            
             VStack {
                 Spacer()
                 Text("Camera Position: \(cameraPosition.description)").bold().monospaced().foregroundStyle(.white)
@@ -101,41 +175,21 @@ struct ArrowControls: View {
     var stopMoving: () -> Void
 
     var body: some View {
-        HStack(spacing: 20) {
-            Button(action: { startMoving(.left) }, label: {
-                Image(systemName: "arrow.left.circle.fill").resizable().frame(width: 50, height: 50)
+        VStack {
+            Button(action: { startMoving(.forward) }, label: {
+                Image(systemName: "arrow.up.circle.fill").resizable().frame(width: 50, height: 50).foregroundStyle(.white)
             }).buttonStyle(.bordered).onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
                 if pressing {
-                    startMoving(.left)
+                    startMoving(.forward)
                 } else {
                     stopMoving()
                 }
             }, perform: {})
-            VStack {
-                Button(action: { startMoving(.forward) }, label: {
-                    Image(systemName: "arrow.up.circle.fill").resizable().frame(width: 50, height: 50)
-                }).buttonStyle(.bordered).onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
-                    if pressing {
-                        startMoving(.forward)
-                    } else {
-                        stopMoving()
-                    }
-                }, perform: {})
-                Button(action: { startMoving(.backward) }, label: {
-                    Image(systemName: "arrow.down.circle.fill").resizable().frame(width: 50, height: 50)
-                }).buttonStyle(.bordered).onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
-                    if pressing {
-                        startMoving(.backward)
-                    } else {
-                        stopMoving()
-                    }
-                }, perform: {})
-            }
-            Button(action: { startMoving(.right) }, label: {
-                Image(systemName: "arrow.right.circle.fill").resizable().frame(width: 50, height: 50)
+            Button(action: { startMoving(.backward) }, label: {
+                Image(systemName: "arrow.down.circle.fill").resizable().frame(width: 50, height: 50).foregroundStyle(.white)
             }).buttonStyle(.bordered).onLongPressGesture(minimumDuration: .infinity, pressing: { pressing in
                 if pressing {
-                    startMoving(.right)
+                    startMoving(.backward)
                 } else {
                     stopMoving()
                 }
