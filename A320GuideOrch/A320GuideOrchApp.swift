@@ -1,18 +1,22 @@
-//
-//  A320GuideOrchApp.swift
-//  A320GuideOrch
-//
-//  Created by John Seong on 4/28/24.
-//
-
 import SwiftUI
 
 @main
 struct A320GuideOrchApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainNavigationView()
                 .preferredColorScheme(.dark)
         }
+        #if os(macOS)
+        .defaultSize(width: 1200, height: 800)
+        #endif
+
+        #if os(visionOS)
+        WindowGroup(id: "cockpit-3d") {
+            CockpitExplorerView()
+                .preferredColorScheme(.dark)
+        }
+        .windowStyle(.volumetric)
+        #endif
     }
 }
