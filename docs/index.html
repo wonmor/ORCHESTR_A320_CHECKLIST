@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORCHESTR A320 — Interactive A320 Cockpit Reference</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --border: #1e1e2e;
+            --text: #e0e0e8;
+            --muted: #8888a0;
+            --accent: #00d4ff;
+            --accent2: #6c5ce7;
+            --warning: #ff6b6b;
+            --success: #00e676;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 100px 24px 80px;
+            background: linear-gradient(180deg, #0d1117 0%, var(--bg) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .hero-badge {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            padding: 6px 16px;
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        .cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+        .btn-primary:hover { background: #33ddff; transform: translateY(-2px); }
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+        /* Features */
+        .features {
+            padding: 80px 0;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 48px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            transition: border-color 0.2s;
+        }
+        .feature-card:hover { border-color: var(--accent); }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        .feature-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+        .feature-card p { font-size: 0.9rem; color: var(--muted); }
+        .feature-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+        .tag-checklists { background: #00d4ff22; color: var(--accent); }
+        .tag-emergency { background: #ff6b6b22; color: var(--warning); }
+        .tag-reference { background: #6c5ce722; color: var(--accent2); }
+        .tag-3d { background: #00e67622; color: var(--success); }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 60px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .stat { text-align: center; }
+        .stat-num {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+        .stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+
+        /* Footer */
+        footer {
+            padding: 48px 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        .footer-links { margin-top: 16px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+
+        @media (max-width: 640px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<section class="hero">
+    <div class="container">
+        <span class="hero-badge">iOS &bull; macOS &bull; visionOS</span>
+        <h1>ORCHESTR A320</h1>
+        <p>The complete interactive Airbus A320 cockpit reference. 3D explorable cockpit, checklists, emergency procedures, instrument guides, and more.</p>
+        <div class="cta-group">
+            <a href="#" class="btn btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                Download on App Store
+            </a>
+            <a href="https://github.com/wonmor/ORCHESTR_A320_CHECKLIST" class="btn btn-secondary">
+                View on GitHub
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <h2>Everything A320, in your pocket.</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">&#9745;</div>
+                <h3>14 Normal Checklists</h3>
+                <p>Cockpit prep through securing. Interactive check-off with progress tracking for every flight phase.</p>
+                <span class="feature-tag tag-checklists">CHECKLISTS</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#9888;</div>
+                <h3>17 Emergency Procedures</h3>
+                <p>Engine fire, dual engine failure, depressurization, ditching, TCAS RA, windshear, and more with memory items.</p>
+                <span class="feature-tag tag-emergency">EMERGENCY</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#128302;</div>
+                <h3>3D Cockpit Explorer</h3>
+                <p>Walk through a fully interactive A320 cockpit. 35+ labeled instruments with tap-through to detailed guides.</p>
+                <span class="feature-tag tag-3d">INTERACTIVE 3D</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#127919;</div>
+                <h3>10 Instrument Guides</h3>
+                <p>PFD, ND, ECAM, FCU, MCDU, overhead panel, pedestal, glareshield, autopilot, and radio systems.</p>
+                <span class="feature-tag tag-reference">REFERENCE</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#9992;</div>
+                <h3>8 Approach Procedures</h3>
+                <p>ILS CAT I/II/III, VOR, VOR/DME, NDB, RNAV GPS, visual, circling, and LOC-only with FMGC setup.</p>
+                <span class="feature-tag tag-reference">REFERENCE</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#128421;</div>
+                <h3>FMGC Operations</h3>
+                <p>Flight plan entry, PERF setup, LNAV/VNAV, DIR TO, holds, secondary flight plan, cost index, winds.</p>
+                <span class="feature-tag tag-reference">REFERENCE</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">14</div>
+                <div class="stat-label">Normal Checklists</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">17</div>
+                <div class="stat-label">Emergency Procedures</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">35+</div>
+                <div class="stat-label">Cockpit Targets</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">8</div>
+                <div class="stat-label">Approach Types</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2026 John Seong. All rights reserved.</p>
+        <p style="margin-top: 8px;">This app is a training and reference tool. Not a substitute for official airline SOPs or Airbus FCOM/QRH.</p>
+        <div class="footer-links">
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="support.html">Support</a>
+            <a href="https://github.com/wonmor/ORCHESTR_A320_CHECKLIST">GitHub</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
