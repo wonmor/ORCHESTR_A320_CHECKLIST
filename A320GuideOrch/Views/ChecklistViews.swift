@@ -1,4 +1,7 @@
 import SwiftUI
+#if os(iOS)
+import UIKit
+#endif
 
 // MARK: - Checklist Category View
 
@@ -131,6 +134,9 @@ struct ChecklistRow: View {
 struct ChecklistDetailView: View {
     @Binding var checklist: Checklist
     @State private var showResetAlert = false
+    #if os(iOS)
+    private let hapticSuccess = UINotificationFeedbackGenerator()
+    #endif
 
     private var completedCount: Int {
         checklist.items.filter(\.isCompleted).count
@@ -153,8 +159,24 @@ struct ChecklistDetailView: View {
             }
 
             Section("Items") {
-                ForEach($checklist.items) { $item in
-                    ChecklistItemRow(item: $item)
+                ForEach(checklist.items.indices, id: \.self) { index in
+                    ChecklistItemRow(
+                        challenge: checklist.items[index].challenge,
+                        response: checklist.items[index].response,
+                        notes: checklist.items[index].notes,
+                        isCompleted: checklist.items[index].isCompleted
+                    ) {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                            checklist.items[index].isCompleted.toggle()
+                        }
+                        #if os(iOS)
+                        if checklist.items[index].isCompleted {
+                            hapticSuccess.notificationOccurred(.success)
+                        } else {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        }
+                        #endif
+                    }
                 }
             }
         }
@@ -168,6 +190,9 @@ struct ChecklistDetailView: View {
                                 checklist.items[i].isCompleted = true
                             }
                         }
+                        #if os(iOS)
+                        hapticSuccess.notificationOccurred(.success)
+                        #endif
                     }
                     Button("Reset All", systemImage: "arrow.counterclockwise", role: .destructive) {
                         showResetAlert = true
@@ -195,37 +220,35 @@ struct ChecklistDetailView: View {
 // MARK: - Checklist Item Row
 
 struct ChecklistItemRow: View {
-    @Binding var item: ChecklistItem
+    let challenge: String
+    let response: String
+    let notes: String?
+    let isCompleted: Bool
+    let onToggle: () -> Void
     @State private var showNotes = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .top) {
-                Button {
-                    withAnimation(.spring(response: 0.3)) {
-                        item.isCompleted.toggle()
-                    }
-                } label: {
-                    Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(item.isCompleted ? .green : .secondary)
-                        .font(.title3)
-                }
-                .buttonStyle(.plain)
+                Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isCompleted ? .green : .secondary)
+                    .font(.title3)
+                    .contentTransition(.symbolEffect(.replace))
 
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Text(item.challenge)
+                        Text(challenge)
                             .font(.subheadline.bold())
-                            .strikethrough(item.isCompleted)
-                            .foregroundStyle(item.isCompleted ? .secondary : .primary)
+                            .strikethrough(isCompleted)
+                            .foregroundStyle(isCompleted ? .secondary : .primary)
                         Spacer()
-                        Text(item.response)
+                        Text(response)
                             .font(.subheadline.monospaced())
-                            .foregroundStyle(item.isCompleted ? .green : .cyan)
+                            .foregroundStyle(isCompleted ? .green : .cyan)
                             .multilineTextAlignment(.trailing)
                     }
 
-                    if let notes = item.notes, showNotes {
+                    if let notes = notes, showNotes {
                         Text(notes)
                             .font(.caption)
                             .foregroundStyle(.secondary)
@@ -233,8 +256,12 @@ struct ChecklistItemRow: View {
                     }
                 }
             }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                onToggle()
+            }
 
-            if item.notes != nil {
+            if notes != nil {
                 Button {
                     withAnimation { showNotes.toggle() }
                 } label: {

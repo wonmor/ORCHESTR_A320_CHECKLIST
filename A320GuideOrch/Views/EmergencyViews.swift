@@ -1,4 +1,7 @@
 import SwiftUI
+#if os(iOS)
+import UIKit
+#endif
 
 // MARK: - Emergency Procedures List
 
@@ -209,15 +212,17 @@ struct ProcedureStepRow: View {
     let step: ProcedureStep
     let isCompleted: Bool
     let onToggle: () -> Void
+    #if os(iOS)
+    private let hapticLight = UIImpactFeedbackGenerator(style: .light)
+    private let hapticSuccess = UINotificationFeedbackGenerator()
+    #endif
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
-            Button(action: onToggle) {
-                Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isCompleted ? .green : .secondary)
-                    .font(.title3)
-            }
-            .buttonStyle(.plain)
+            Image(systemName: isCompleted ? "checkmark.circle.fill" : "circle")
+                .foregroundStyle(isCompleted ? .green : .secondary)
+                .font(.title3)
+                .contentTransition(.symbolEffect(.replace))
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(step.action)
@@ -240,6 +245,17 @@ struct ProcedureStepRow: View {
                     .foregroundStyle(.orange)
                 }
             }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onToggle()
+            #if os(iOS)
+            if !isCompleted {
+                hapticSuccess.notificationOccurred(.success)
+            } else {
+                hapticLight.impactOccurred()
+            }
+            #endif
         }
         .padding(.vertical, 2)
     }
