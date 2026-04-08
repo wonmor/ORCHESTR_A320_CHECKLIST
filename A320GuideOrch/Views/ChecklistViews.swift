@@ -6,12 +6,12 @@ import UIKit
 // MARK: - Checklist Category View
 
 struct ChecklistCategoryView: View {
-    @State private var checklists = A320Database.normalChecklists
+    @State var store: ChecklistStore
     @State private var searchText = ""
 
     private var filteredChecklists: [Checklist] {
-        if searchText.isEmpty { return checklists }
-        return checklists.filter {
+        if searchText.isEmpty { return store.checklists }
+        return store.checklists.filter {
             $0.title.localizedCaseInsensitiveContains(searchText) ||
             $0.subtitle.localizedCaseInsensitiveContains(searchText)
         }
@@ -46,8 +46,8 @@ struct ChecklistCategoryView: View {
             }
             .navigationTitle("Normal Checklists")
             .navigationDestination(for: Int.self) { index in
-                if index >= 0 && index < checklists.count {
-                    ChecklistDetailView(checklist: $checklists[index])
+                if index >= 0 && index < store.checklists.count {
+                    ChecklistDetailView(store: store, checklistIndex: index)
                 }
             }
             .searchable(text: $searchText, prompt: "Search checklists...")
@@ -55,13 +55,13 @@ struct ChecklistCategoryView: View {
     }
 
     private func checklistIndex(for checklist: Checklist) -> Int {
-        checklists.firstIndex(where: { $0.id == checklist.id }) ?? 0
+        store.checklists.firstIndex(where: { $0.id == checklist.id }) ?? 0
     }
 
     private var progressSection: some View {
         Section {
-            let total = checklists.flatMap(\.items).count
-            let completed = checklists.flatMap(\.items).filter(\.isCompleted).count
+            let total = store.checklists.flatMap(\.items).count
+            let completed = store.checklists.flatMap(\.items).filter(\.isCompleted).count
             let progress = total > 0 ? Double(completed) / Double(total) : 0
 
             VStack(alignment: .leading, spacing: 8) {
@@ -132,11 +132,14 @@ struct ChecklistRow: View {
 // MARK: - Checklist Detail View
 
 struct ChecklistDetailView: View {
-    @Binding var checklist: Checklist
+    @State var store: ChecklistStore
+    let checklistIndex: Int
     @State private var showResetAlert = false
     #if os(iOS)
     private let hapticSuccess = UINotificationFeedbackGenerator()
     #endif
+
+    private var checklist: Checklist { store.checklists[checklistIndex] }
 
     private var completedCount: Int {
         checklist.items.filter(\.isCompleted).count
@@ -167,7 +170,7 @@ struct ChecklistDetailView: View {
                         isCompleted: checklist.items[index].isCompleted
                     ) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                            checklist.items[index].isCompleted.toggle()
+                            store.toggleItem(checklistIndex: checklistIndex, itemIndex: index)
                         }
                         #if os(iOS)
                         if checklist.items[index].isCompleted {
@@ -186,9 +189,7 @@ struct ChecklistDetailView: View {
                 Menu {
                     Button("Complete All", systemImage: "checkmark.circle.fill") {
                         withAnimation {
-                            for i in checklist.items.indices {
-                                checklist.items[i].isCompleted = true
-                            }
+                            store.completeAll(checklistIndex: checklistIndex)
                         }
                         #if os(iOS)
                         hapticSuccess.notificationOccurred(.success)
@@ -205,9 +206,7 @@ struct ChecklistDetailView: View {
         .alert("Reset Checklist?", isPresented: $showResetAlert) {
             Button("Reset", role: .destructive) {
                 withAnimation {
-                    for i in checklist.items.indices {
-                        checklist.items[i].isCompleted = false
-                    }
+                    store.resetChecklist(checklistIndex: checklistIndex)
                 }
             }
             Button("Cancel", role: .cancel) {}

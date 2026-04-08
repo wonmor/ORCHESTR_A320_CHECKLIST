@@ -5,6 +5,7 @@ import SwiftUI
 struct MainNavigationView: View {
     @State private var selectedTab: AppTab = .checklists
     @State private var searchText = ""
+    @State private var checklistStore = ChecklistStore()
 
     var body: some View {
         #if os(iOS)
@@ -18,7 +19,7 @@ struct MainNavigationView: View {
 
     private var tabNavigation: some View {
         TabView(selection: $selectedTab) {
-            ChecklistCategoryView()
+            ChecklistCategoryView(store: checklistStore)
                 .tabItem {
                     Label("Checklists", systemImage: "checklist")
                 }
@@ -30,11 +31,11 @@ struct MainNavigationView: View {
                 }
                 .tag(AppTab.emergency)
 
-            InstrumentGuideListView()
+            VisualSightPictureView()
                 .tabItem {
-                    Label("Instruments", systemImage: "gauge.with.dots.needle.33percent")
+                    Label("Visual", systemImage: "eye.fill")
                 }
-                .tag(AppTab.instruments)
+                .tag(AppTab.visual)
 
             ApproachProcedureListView()
                 .tabItem {
@@ -42,23 +43,23 @@ struct MainNavigationView: View {
                 }
                 .tag(AppTab.approaches)
 
-            FMGCOperationsListView()
+            QuizView()
                 .tabItem {
-                    Label("FMGC", systemImage: "keyboard")
+                    Label("Quiz", systemImage: "brain.head.profile")
                 }
-                .tag(AppTab.fmgc)
-
-            POHReferenceView()
-                .tabItem {
-                    Label("POH", systemImage: "book.closed")
-                }
-                .tag(AppTab.poh)
+                .tag(AppTab.quiz)
 
             CockpitExplorerView()
                 .tabItem {
                     Label("3D Cockpit", systemImage: "view.3d")
                 }
                 .tag(AppTab.cockpit3D)
+
+            MoreView()
+                .tabItem {
+                    Label("More", systemImage: "ellipsis")
+                }
+                .tag(AppTab.more)
         }
         .tint(.cyan)
     }
@@ -78,12 +79,16 @@ struct MainNavigationView: View {
                         .tag(AppTab.instruments)
                     Label("Approaches", systemImage: "scope")
                         .tag(AppTab.approaches)
+                    Label("Visual Sight Picture", systemImage: "eye.fill")
+                        .tag(AppTab.visual)
                     Label("FMGC", systemImage: "keyboard")
                         .tag(AppTab.fmgc)
                     Label("POH", systemImage: "book.closed")
                         .tag(AppTab.poh)
                 }
                 Section("Interactive") {
+                    Label("Quiz", systemImage: "brain.head.profile")
+                        .tag(AppTab.quiz)
                     Label("3D Cockpit", systemImage: "view.3d")
                         .tag(AppTab.cockpit3D)
                 }
@@ -91,17 +96,51 @@ struct MainNavigationView: View {
             .navigationTitle("A320 Guide")
         } detail: {
             switch selectedTab {
-            case .checklists: ChecklistCategoryView()
+            case .checklists: ChecklistCategoryView(store: checklistStore)
             case .emergency: EmergencyProceduresListView()
             case .instruments: InstrumentGuideListView()
             case .approaches: ApproachProcedureListView()
+            case .visual: VisualSightPictureView()
             case .fmgc: FMGCOperationsListView()
             case .poh: POHReferenceView()
+            case .quiz: QuizView()
             case .cockpit3D: CockpitExplorerView()
+            case .more: MoreView()
             }
         }
     }
     #endif
+}
+
+// MARK: - More View (overflow tabs for iOS)
+
+struct MoreView: View {
+    var body: some View {
+        NavigationStack {
+            List {
+                Section("Reference") {
+                    NavigationLink {
+                        InstrumentGuideListView()
+                    } label: {
+                        Label("Instrument Guides", systemImage: "gauge.with.dots.needle.33percent")
+                    }
+
+                    NavigationLink {
+                        FMGCOperationsListView()
+                    } label: {
+                        Label("FMGC Operations", systemImage: "keyboard")
+                    }
+
+                    NavigationLink {
+                        POHReferenceView()
+                    } label: {
+                        Label("POH Reference", systemImage: "book.closed")
+                    }
+                }
+            }
+            .navigationTitle("More")
+        }
+    }
 }
 
 enum AppTab: Hashable {
@@ -109,7 +148,10 @@ enum AppTab: Hashable {
     case emergency
     case instruments
     case approaches
+    case visual
     case fmgc
     case poh
+    case quiz
     case cockpit3D
+    case more
 }

@@ -30,6 +30,9 @@
 		CE2A49668174B7AD292BD4F3 /* ChecklistViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A14039AC53EE839D3B4327 /* ChecklistViews.swift */; };
 		ED3240AA8D65A0EFFB145E65 /* ChecklistModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3140B0B2C329DC3627A10D /* ChecklistModels.swift */; };
 		EDD842749515AC69F63133F7 /* FMGCViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B24EC798A5DDAF91E9F011 /* FMGCViews.swift */; };
+		AA1140001111000011110001 /* QuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1140001111000011110002 /* QuizView.swift */; };
+		AA1140001111000011110003 /* VisualSightPictureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1140001111000011110004 /* VisualSightPictureView.swift */; };
+		AA1140001111000011110005 /* ChecklistStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1140001111000011110006 /* ChecklistStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +78,9 @@
 		DC3140B0B2C329DC3627A10D /* ChecklistModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChecklistModels.swift; path = A320GuideOrch/Models/ChecklistModels.swift; sourceTree = SOURCE_ROOT; };
 		EC484E2692C68506CB5DCD7F /* CockpitExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CockpitExplorerView.swift; path = A320GuideOrch/Views/CockpitExplorerView.swift; sourceTree = SOURCE_ROOT; };
 		F20E4512B01682C28B9266C8 /* PlatformAliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PlatformAliases.swift; path = A320GuideOrch/Platform/PlatformAliases.swift; sourceTree = SOURCE_ROOT; };
+		AA1140001111000011110002 /* QuizView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QuizView.swift; path = A320GuideOrch/Views/QuizView.swift; sourceTree = SOURCE_ROOT; };
+		AA1140001111000011110004 /* VisualSightPictureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VisualSightPictureView.swift; path = A320GuideOrch/Views/VisualSightPictureView.swift; sourceTree = SOURCE_ROOT; };
+		AA1140001111000011110006 /* ChecklistStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChecklistStore.swift; path = A320GuideOrch/Models/ChecklistStore.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +127,9 @@
 				66B24EC798A5DDAF91E9F011 /* FMGCViews.swift */,
 				94334A7083B78DCD5E71E331 /* POHViews.swift */,
 				EC484E2692C68506CB5DCD7F /* CockpitExplorerView.swift */,
+				AA1140001111000011110002 /* QuizView.swift */,
+				AA1140001111000011110004 /* VisualSightPictureView.swift */,
+				AA1140001111000011110006 /* ChecklistStore.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -327,6 +336,9 @@
 				EDD842749515AC69F63133F7 /* FMGCViews.swift in Sources */,
 				52934A9BB6842BFB177553AD /* POHViews.swift in Sources */,
 				782540908702D0195B56ECCE /* CockpitExplorerView.swift in Sources */,
+				AA1140001111000011110001 /* QuizView.swift in Sources */,
+				AA1140001111000011110003 /* VisualSightPictureView.swift in Sources */,
+				AA1140001111000011110005 /* ChecklistStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -488,7 +500,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"A320GuideOrch/Preview Content\"";
 				DEVELOPMENT_TEAM = Z64KRUX3W3;
 				ENABLE_PREVIEWS = YES;
@@ -503,7 +515,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -518,7 +530,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"A320GuideOrch/Preview Content\"";
 				DEVELOPMENT_TEAM = Z64KRUX3W3;
 				ENABLE_PREVIEWS = YES;
@@ -533,7 +545,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -548,11 +560,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Z64KRUX3W3;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrchTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -568,11 +580,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Z64KRUX3W3;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrchTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -587,10 +599,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Z64KRUX3W3;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrchUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -605,10 +617,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Z64KRUX3W3;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.johnseong.A320GuideOrchUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
