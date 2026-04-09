@@ -800,7 +800,7 @@ object A320Database {
         glareshieldGuide,
         autopilotGuide,
         radioGuide
-    )
+    ) }
 
     val pfdGuide = InstrumentGuide(
         name = "Primary Flight Display",
@@ -1201,7 +1201,7 @@ object A320Database {
 
     // MARK: - Approach Procedures
 
-    val approachProcedures: List<ApproachProcedure> = listOf(
+    val approachProcedures: List<ApproachProcedure> by lazy { listOf(
         ilsApproach,
         vorApproach,
         vorDmeApproach,
@@ -1210,7 +1210,7 @@ object A320Database {
         visualApproach,
         circlingApproach,
         locOnlyApproach
-    )
+    ) }
 
     val ilsApproach = ApproachProcedure(
         name = "ILS Approach (CAT I / II / III)",
@@ -1458,7 +1458,7 @@ object A320Database {
 
     // MARK: - FMGC Operations
 
-    val fmgcOperations: List<FMGCOperation> = listOf(
+    val fmgcOperations: List<FMGCOperation> by lazy { listOf(
         flightPlanEntry,
         perfSetup,
         lateralNav,
@@ -1469,7 +1469,7 @@ object A320Database {
         stepClimb,
         costIndex,
         windEntry
-    )
+    ) }
 
     val flightPlanEntry = FMGCOperation(
         title = "Flight Plan Entry",
@@ -1711,12 +1711,12 @@ object A320Database {
 
     // MARK: - POH Reference
 
-    val pohSections: List<POHSection> = listOf(
+    val pohSections: List<POHSection> by lazy { listOf(
         limitations,
         weightBalance,
         performanceTables,
         systemsDescription
-    )
+    ) }
 
     val limitations = POHSection(
         title = "Aircraft Limitations",

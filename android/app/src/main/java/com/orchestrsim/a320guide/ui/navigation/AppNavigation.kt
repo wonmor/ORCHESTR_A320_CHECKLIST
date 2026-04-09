@@ -9,10 +9,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import com.orchestrsim.a320guide.data.A320Database
+import com.orchestrsim.a320guide.data.ChecklistStore
 import com.orchestrsim.a320guide.ui.screens.*
 
 enum class AppTab(
@@ -29,42 +30,9 @@ enum class AppTab(
     MORE("More", Icons.Outlined.MoreHoriz, Icons.Filled.MoreHoriz, "more");
 }
 
-sealed class Screen(val route: String) {
-    data object ChecklistList : Screen("checklists")
-    data object ChecklistDetail : Screen("checklist/{index}") {
-        fun createRoute(index: Int) = "checklist/$index"
-    }
-    data object EmergencyList : Screen("emergency")
-    data object EmergencyDetail : Screen("emergency/{index}") {
-        fun createRoute(index: Int) = "emergency/$index"
-    }
-    data object VisualSightPicture : Screen("visual")
-    data object ApproachList : Screen("approaches")
-    data object ApproachDetail : Screen("approach/{index}") {
-        fun createRoute(index: Int) = "approach/$index"
-    }
-    data object Quiz : Screen("quiz")
-    data object InstrumentList : Screen("instruments")
-    data object InstrumentDetail : Screen("instrument/{index}") {
-        fun createRoute(index: Int) = "instrument/$index"
-    }
-    data object FMGCList : Screen("fmgc")
-    data object FMGCDetail : Screen("fmgc/{index}") {
-        fun createRoute(index: Int) = "fmgc/$index"
-    }
-    data object POHList : Screen("poh")
-    data object POHDetail : Screen("poh/{index}") {
-        fun createRoute(index: Int) = "poh/$index"
-    }
-    data object More : Screen("more")
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    var selectedTab by rememberSaveable { mutableStateOf(AppTab.CHECKLISTS) }
-
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
 
@@ -97,7 +65,6 @@ fun AppNavigation() {
                         label = { Text(tab.title) },
                         selected = isSelected,
                         onClick = {
-                            selectedTab = tab
                             navController.navigate(tab.route) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
@@ -116,143 +83,165 @@ fun AppNavigation() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.ChecklistList.route,
+            startDestination = "checklists",
             modifier = Modifier.padding(innerPadding)
         ) {
             // Checklists
-            composable(Screen.ChecklistList.route) {
+            composable("checklists") {
                 ChecklistCategoryScreen(
+                    checklists = ChecklistStore.checklists,
                     onChecklistClick = { index ->
-                        navController.navigate(Screen.ChecklistDetail.createRoute(index))
+                        navController.navigate("checklist/$index")
                     }
                 )
             }
             composable(
-                Screen.ChecklistDetail.route,
+                "checklist/{index}",
                 arguments = listOf(navArgument("index") { type = NavType.IntType })
             ) { backStackEntry ->
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
-                ChecklistDetailScreen(
-                    checklistIndex = index,
-                    onBack = { navController.popBackStack() }
-                )
+                if (index < ChecklistStore.checklists.size) {
+                    ChecklistDetailScreen(
+                        checklist = ChecklistStore.checklists[index],
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
 
             // Emergency
-            composable(Screen.EmergencyList.route) {
+            composable("emergency") {
                 EmergencyListScreen(
-                    onProcedureClick = { index ->
-                        navController.navigate(Screen.EmergencyDetail.createRoute(index))
+                    procedures = A320Database.emergencyProcedures,
+                    onProcedureClick = { proc ->
+                        val index = A320Database.emergencyProcedures.indexOf(proc)
+                        navController.navigate("emergency/$index")
                     }
                 )
             }
             composable(
-                Screen.EmergencyDetail.route,
+                "emergency/{index}",
                 arguments = listOf(navArgument("index") { type = NavType.IntType })
             ) { backStackEntry ->
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
-                EmergencyDetailScreen(
-                    procedureIndex = index,
-                    onBack = { navController.popBackStack() }
-                )
+                if (index < A320Database.emergencyProcedures.size) {
+                    EmergencyDetailScreen(
+                        procedure = A320Database.emergencyProcedures[index],
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
 
             // Visual Sight Picture
-            composable(Screen.VisualSightPicture.route) {
+            composable("visual") {
                 VisualSightPictureScreen()
             }
 
             // Approaches
-            composable(Screen.ApproachList.route) {
+            composable("approaches") {
                 ApproachListScreen(
-                    onApproachClick = { index ->
-                        navController.navigate(Screen.ApproachDetail.createRoute(index))
+                    procedures = A320Database.approachProcedures,
+                    onProcedureClick = { proc ->
+                        val index = A320Database.approachProcedures.indexOf(proc)
+                        navController.navigate("approach/$index")
                     }
                 )
             }
             composable(
-                Screen.ApproachDetail.route,
+                "approach/{index}",
                 arguments = listOf(navArgument("index") { type = NavType.IntType })
             ) { backStackEntry ->
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
-                ApproachDetailScreen(
-                    procedureIndex = index,
-                    onBack = { navController.popBackStack() }
-                )
+                if (index < A320Database.approachProcedures.size) {
+                    ApproachDetailScreen(
+                        procedure = A320Database.approachProcedures[index],
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
 
             // Quiz
-            composable(Screen.Quiz.route) {
-                QuizScreen()
+            composable("quiz") {
+                QuizScreen(
+                    allQuestions = remember { com.orchestrsim.a320guide.data.QuizGenerator.generateQuestions(count = 100) }
+                )
             }
 
             // More
-            composable(Screen.More.route) {
+            composable("more") {
                 MoreScreen(
-                    onInstrumentsClick = { navController.navigate(Screen.InstrumentList.route) },
-                    onFMGCClick = { navController.navigate(Screen.FMGCList.route) },
-                    onPOHClick = { navController.navigate(Screen.POHList.route) }
+                    onInstrumentsClick = { navController.navigate("instruments") },
+                    onFMGCClick = { navController.navigate("fmgc") },
+                    onPOHClick = { navController.navigate("poh") }
                 )
             }
 
             // Instruments
-            composable(Screen.InstrumentList.route) {
+            composable("instruments") {
                 InstrumentListScreen(
-                    onGuideClick = { index ->
-                        navController.navigate(Screen.InstrumentDetail.createRoute(index))
-                    },
-                    onBack = { navController.popBackStack() }
+                    guides = A320Database.instrumentGuides,
+                    onGuideClick = { guide ->
+                        val index = A320Database.instrumentGuides.indexOf(guide)
+                        navController.navigate("instrument/$index")
+                    }
                 )
             }
             composable(
-                Screen.InstrumentDetail.route,
+                "instrument/{index}",
                 arguments = listOf(navArgument("index") { type = NavType.IntType })
             ) { backStackEntry ->
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
-                InstrumentDetailScreen(
-                    guideIndex = index,
-                    onBack = { navController.popBackStack() }
-                )
+                if (index < A320Database.instrumentGuides.size) {
+                    InstrumentDetailScreen(
+                        guide = A320Database.instrumentGuides[index],
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
 
             // FMGC
-            composable(Screen.FMGCList.route) {
+            composable("fmgc") {
                 FMGCListScreen(
-                    onOperationClick = { index ->
-                        navController.navigate(Screen.FMGCDetail.createRoute(index))
-                    },
-                    onBack = { navController.popBackStack() }
+                    operations = A320Database.fmgcOperations,
+                    onOperationClick = { op ->
+                        val index = A320Database.fmgcOperations.indexOf(op)
+                        navController.navigate("fmgc/$index")
+                    }
                 )
             }
             composable(
-                Screen.FMGCDetail.route,
+                "fmgc/{index}",
                 arguments = listOf(navArgument("index") { type = NavType.IntType })
             ) { backStackEntry ->
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
-                FMGCDetailScreen(
-                    operationIndex = index,
-                    onBack = { navController.popBackStack() }
-                )
+                if (index < A320Database.fmgcOperations.size) {
+                    FMGCDetailScreen(
+                        operation = A320Database.fmgcOperations[index],
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
 
             // POH
-            composable(Screen.POHList.route) {
+            composable("poh") {
                 POHListScreen(
-                    onSectionClick = { index ->
-                        navController.navigate(Screen.POHDetail.createRoute(index))
-                    },
-                    onBack = { navController.popBackStack() }
+                    sections = A320Database.pohSections,
+                    onSectionClick = { section ->
+                        val index = A320Database.pohSections.indexOf(section)
+                        navController.navigate("poh/$index")
+                    }
                 )
             }
             composable(
-                Screen.POHDetail.route,
+                "poh/{index}",
                 arguments = listOf(navArgument("index") { type = NavType.IntType })
             ) { backStackEntry ->
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
-                POHDetailScreen(
-                    sectionIndex = index,
-                    onBack = { navController.popBackStack() }
-                )
+                if (index < A320Database.pohSections.size) {
+                    POHDetailScreen(
+                        section = A320Database.pohSections[index],
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
         }
     }
